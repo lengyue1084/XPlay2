@@ -14,6 +14,7 @@ public:
 	virtual int Resample(AVFrame *indata,unsigned char *data);
 	XResample();
 	~XResample();
+	//AV_SAMPLE_FMT_S16
 	int outFormat = 1;
 protected:
 	std::mutex mux;

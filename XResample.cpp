@@ -6,17 +6,18 @@ extern "C" {
 
 }
 #pragma comment(lib,"swresample.lib")
-
 #include <iostream>
 using namespace std;
 
 //输出参数喝输入参数一致除了采样格式，输出为S16,会释放para空间
-bool XResample::Open(AVCodecParameters* para, bool isClearPara = false)
+bool XResample::Open(AVCodecParameters* para, bool isClearPara)
 {
 	if (!para) return false;
 	mux.lock();
 	//音频重采样 上下文初始化
-	//SwrContext* actx = swr_alloc();
+	//if(!actx)
+	//
+	//如果actx为NULL会分配空间
 	actx = swr_alloc_set_opts(actx,
 		av_get_default_channel_layout(2),	//输出格式
 		//AV_SAMPLE_FMT_S16,				//输出样本格式
@@ -27,9 +28,10 @@ bool XResample::Open(AVCodecParameters* para, bool isClearPara = false)
 		para->sample_rate,
 		0, 0
 	);
-	avcodec_parameters_free(&para);
+	if(isClearPara)
+		avcodec_parameters_free(&para);
 	int re = swr_init(actx);
-
+	mux.unlock();
 	if (re != 0)
 	{
 		char buf[1024] = { 0 };
@@ -37,8 +39,7 @@ bool XResample::Open(AVCodecParameters* para, bool isClearPara = false)
 		cout << "swr_init  failed! :" << buf << endl;
 		return false;
 	}
-	unsigned char* pcm = NULL;
-	mux.unlock();
+	//unsigned char* pcm = NULL;
 	return true;
 
 };
