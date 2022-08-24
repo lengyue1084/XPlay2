@@ -2,8 +2,13 @@
 #include "XDecode.h"
 #include "XAudioPlay.h"
 #include "XResample.h"
-
 #include <iostream>
+
+extern "C" {
+#include <libswresample/swresample.h>
+#include <libavcodec/avcodec.h>
+
+}
 using namespace std;
 
 void XAudioThread::Push(AVPacket* pkt) 
@@ -15,7 +20,7 @@ void XAudioThread::Push(AVPacket* pkt)
 		mux.lock();
 		if (packs.size() < maxList) {
 			packs.push_back(pkt);
-			mux.unlock();;
+			mux.unlock();
 			break;
 		}
 		msleep(1);
@@ -44,6 +49,7 @@ bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 		cout << "XResample open failed !" << endl;
 		re = false;
 	}
+
 	ap->sampleRate = sampleRate;
 	ap->channels = channels;
 	if (!ap->Open()) {
@@ -63,7 +69,7 @@ bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 	return re;
 
 };
-void XAudioThread::Run()
+void XAudioThread::run()
 {
 	unsigned char* pcm = new unsigned char[1024 * 1024 * 10];
 	while (!isExit) {
@@ -91,7 +97,8 @@ void XAudioThread::Run()
 			if (!frame) break;
 			//重采样
 			int size = res->Resample(frame,pcm);//会释放frame空间，此处不需要释放
-			//av_frame_free(&frame);
+
+			av_frame_free(&frame);
 			//播放音频
 			while (!isExit)
 			{
@@ -101,6 +108,7 @@ void XAudioThread::Run()
 					msleep(1);
 					continue;
 				}
+			
 				ap->Write(pcm,size);
 				break;
 

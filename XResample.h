@@ -6,7 +6,7 @@ struct SwrContext;
 class XResample
 {
 public:
-	//输出参数喝输入参数一致除了采样格式，输出为S16,会释放para空间
+	//输出参数和输入参数一致除了采样格式，输出为S16,会释放para空间
 	virtual bool Open(AVCodecParameters *para,bool isClearPara = false);
 	virtual void Close();
 

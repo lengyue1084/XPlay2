@@ -16,12 +16,12 @@ public:
 	virtual bool Open(AVCodecParameters* para,int sampleRate,int channels);
 	//多个线程，所以需要一个list队列进行push,然后线程去读AVPacket数据
 	virtual void Push(AVPacket *pkt);
-	void Run();
+	void run();
 	XAudioThread();
 	virtual ~XAudioThread();
 
 	//最大队列
-	int maxList = 100;
+	int maxList = 100*100;
 	bool isExit = false;
 
 protected:

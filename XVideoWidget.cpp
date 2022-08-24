@@ -71,6 +71,7 @@ void XVideoWidget::Repaint(AVFrame *frame)
 	memcpy(datas[1], frame->data[1], width * height / 4);
 	memcpy(datas[2], frame->data[2], width * height / 4);
 	mux.unlock();
+	av_frame_free(&frame);
 	//Ë¢ÐÂÏÔÊ¾
 	update();
 };

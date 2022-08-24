@@ -58,6 +58,12 @@
     <ClCompile Include="XAudioThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XVideoThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XDemuxThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XDemux.h">
@@ -73,6 +79,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XAudioThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XVideoThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IVideoCall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XDemuxThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

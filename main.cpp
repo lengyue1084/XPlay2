@@ -11,10 +11,12 @@ extern "C" {
 }
 #include <QThread>
 #include "XAudioThread.h"
+#include "XVideoThread.h"
 class TestThread : public QThread
 {
 public:
     XAudioThread at;
+    XVideoThread vt;
     void Init()
     {
         const char* url = "rtmp://live.hkstv.hk.lxdns.com/hks";
@@ -26,17 +28,24 @@ public:
         url = "v123.mp4";
         cout << "demux.Open = " << demux.Open(url) << endl;
         //cout << "demux.Seek = " << demux.Seek(0.9) << endl;
+        //cout << "demux.CopyVPara = " << demux.CopyVPara() << endl;
+        //cout << "demux.CopyAPara = " << demux.CopyAPara() << endl;
         //vdecode.Open(demux.CopyVPara());
         //adecode.Open(demux.CopyAPara());
         //重采样
         //cout << "resample.Open = " << resample.Open(demux.CopyAPara()) << endl;;
-        //XAudioPlay::Get()->sampleRate = demux.sampleRate;
-        //XAudioPlay::Get()->channels = demux.channels;
-        //cout << "XAudioPlay::Get()->Open() = " << XAudioPlay::Get()->Open() << endl;;
-        //XAudioPlay::Get()->Open();
+       /* XAudioPlay::Get()->sampleRate = demux.sampleRate;
+        XAudioPlay::Get()->channels = demux.channels;
+        cout << "XAudioPlay::Get()->Open() = " << XAudioPlay::Get()->Open() << endl;;
+        XAudioPlay::Get()->Open();*/
 
-        cout << "at.Open:" << at.Open(demux.CopyAPara(),demux.sampleRate,demux.channels) << endl;
+        cout << "at.Open = " << at.Open(demux.CopyAPara(),demux.sampleRate,demux.channels) << endl;
+     ;
+        vt.Open(demux.CopyVPara(), video, demux.width, demux.height);
+        //音频的线程启动
         at.start();
+        //启动视频线程
+        vt.start();
     }
     unsigned char* pcm = new unsigned char[1024 * 1024];
     void run()
@@ -63,12 +72,13 @@ public:
                 //av_frame_free(&frame);
             }
             else {
-                vdecode.Send(pkt);
+                vt.Push(pkt);
+                /*vdecode.Send(pkt);
                 AVFrame* frame = vdecode.Recv();
                 video->Repaint(frame);
                 cout << "Video = " << frame << endl;
-                //msleep(40);
-                //av_frame_free(&frame);
+                msleep(1);
+                av_frame_free(&frame);*/
             }
             if (!pkt) break;
         }
@@ -76,9 +86,9 @@ public:
     }
     // 测试XDemux
     XDemux demux;
-    XDecode vdecode;
+    /*XDecode vdecode;
     XDecode adecode;
-    XResample resample;
+    XResample resample*/
     XVideoWidget *video = 0;
 };
 //v123.mp4
@@ -91,13 +101,13 @@ int main(int argc, char *argv[])
 
   
     TestThread tt;
-    tt.Init();
     QApplication a(argc, argv);
     XPlay2 w;
     w.show();
     //初始化gl窗口
-    w.ui.video->Init(tt.demux.width,tt.demux.height);
-    tt.start();
+    //w.ui.video->Init(tt.demux.width,tt.demux.height);
     tt.video = w.ui.video;
+    tt.Init();
+    tt.start();
     return a.exec();
 }
