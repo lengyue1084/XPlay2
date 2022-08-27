@@ -15,6 +15,7 @@ XDecode::~XDecode() {
 		 avcodec_close(codec);
 		 avcodec_free_context(&codec);
 	 }
+	 pts = 0;
 	 mux.unlock();
 }
 
@@ -110,6 +111,8 @@ AVFrame *XDecode::Recv()
 	}
 
 	cout << "[" << frame->linesize[0] << "] " << flush;
+
+	pts = frame->pts;
 	//av_frame_free(&frame);
 	return frame;
 

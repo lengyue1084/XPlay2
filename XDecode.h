@@ -8,6 +8,9 @@ class XDecode
 {
 public:
 	bool isAudio = false;
+	//当前解码到的pts
+	long long pts = 0;
+
 	//打开解码器,不管是否成功并且释放空间，音视频通用
 	virtual bool Open(AVCodecParameters *para);
 

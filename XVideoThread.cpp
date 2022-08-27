@@ -6,6 +6,7 @@ bool XVideoThread::Open(AVCodecParameters* para, IVideoCall* call, int width, in
 	if (!para) return false;
 
 	mux.lock();
+	synpts = 0;
 	//初始化显示窗口
 	this->call = call;
 	if (call) {
@@ -49,6 +50,13 @@ void  XVideoThread::run()
 		mux.lock();
 		//如果没有数据
 		if (packs.empty() || !decode) {
+			mux.unlock();
+			msleep(1);
+			continue;
+		}
+
+		//音视频同步，如果快了就等待一下
+		if (synpts < decode->pts) {
 			mux.unlock();
 			msleep(1);
 			continue;

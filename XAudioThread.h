@@ -12,6 +12,10 @@ struct AVCodecParameters;
 class XAudioThread :public QThread
 {
 public:
+
+	//当前播放音频的pts
+	long long pts = 0;
+
 	//打开,成功与否都要清理资源
 	virtual bool Open(AVCodecParameters* para,int sampleRate,int channels);
 	//多个线程，所以需要一个list队列进行push,然后线程去读AVPacket数据

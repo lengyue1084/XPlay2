@@ -16,11 +16,17 @@ void XDemuxThread::run()
 			msleep(5);
 			continue;
 		}
+
+		//音视频同步，没有考虑只有音频或者视频的情况
+		if (vt && at)
+		{
+			vt->synpts = at->pts;
+		}
 		AVPacket* pkt = demux->Read();
 		//没有读取到视频帧
 		if (!pkt) {
 			mux.unlock();
-			msleep(5);
+			msleep(10);
 			continue;
 		}
 		//读取到数据判断数据类型

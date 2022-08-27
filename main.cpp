@@ -111,9 +111,10 @@ int main(int argc, char *argv[])
     //tt.Init();
     //tt.start();
 
-
+    const char* url = "v123.mp4";
+    //url = "https://sf1-hscdn-tos.pstatp.com/obj/media-fe/xgplayer_doc_video/flv/xgplayer-demo-360p.flv";
     XDemuxThread dt;
-    dt.Open("v123.mp4",w.ui.video);
+    dt.Open(url,w.ui.video);
     dt.Start();
     return a.exec();
 }

@@ -49,34 +49,49 @@ void main(void)
 
 //准备yuv数据
 // ffmpeg -i v1080.mp4 -t 10 -s 240x128 -pix_fmt yuv420p  out240x128.yuv
-XVideoWidget::XVideoWidget(QWidget *parent)
+XVideoWidget::XVideoWidget(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
 }
 
-void XVideoWidget::Repaint(AVFrame *frame) 
+void XVideoWidget::Repaint(AVFrame* frame)
 {
 	if (frame == NULL) return;
 	//行对齐问题
 	mux.lock();
 	//容错保证尺寸正确（视频，音频为零）
-	if (width * height == 0 ||frame->width != this->width || frame->height != this->height) 
+	if (width * height == 0 || frame->width != this->width || frame->height != this->height)
 	{
-	
+
 		av_frame_free(&frame);
 		mux.unlock();
 		return;
 	}
-	memcpy(datas[0], frame->data[0], width * height);
-	memcpy(datas[1], frame->data[1], width * height / 4);
-	memcpy(datas[2], frame->data[2], width * height / 4);
+	//会发生数据对齐的问题，不如数据拷贝不完整导致画面花屏
+	if (width == frame->linesize[0]) {//无需要对齐
+		memcpy(datas[0], frame->data[0], width * height);
+		memcpy(datas[1], frame->data[1], width * height / 4);
+		memcpy(datas[2], frame->data[2], width * height / 4);
+
+	}
+	else { //行对齐
+
+		for (int i = 0; i < height; i++) //Y 
+			memcpy(datas[0] + width * i, frame->data[0] + frame->linesize[0] * i, width);
+		for (int i = 0; i < height / 2; i++) //U
+			memcpy(datas[1] + width / 2 * i, frame->data[1] + frame->linesize[1] * i, width);
+		for (int i = 0; i < height / 2; i++) //V
+			memcpy(datas[2] + width / 2 * i, frame->data[2] + frame->linesize[2] * i, width);
+
+	}
+
 	mux.unlock();
 	av_frame_free(&frame);
 	//刷新显示
 	update();
 };
 
-void XVideoWidget::Init(int width, int height) 
+void XVideoWidget::Init(int width, int height)
 {
 	mux.lock();
 	this->width = width;
@@ -92,7 +107,7 @@ void XVideoWidget::Init(int width, int height)
 
 
 	if (texs[0]) {
-		glDeleteTextures(3,texs);
+		glDeleteTextures(3, texs);
 	}
 	//创建材质
 	glGenTextures(3, texs);
@@ -188,7 +203,7 @@ void XVideoWidget::initializeGL()
 
 
 
-	
+
 	mux.unlock();
 	//fp = fopen("out240x128.yuv", "rb");
 	//if (!fp)
