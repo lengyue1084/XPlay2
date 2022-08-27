@@ -4,6 +4,39 @@
 #include "XAudioThread.h"
 #include <iostream>
 using namespace std;
+
+void XDemuxThread::run()
+{
+
+	while (!isExit)
+	{
+		mux.lock();
+		if (!demux) {
+			mux.unlock();
+			msleep(5);
+			continue;
+		}
+		AVPacket* pkt = demux->Read();
+		//没有读取到视频帧
+		if (!pkt) {
+			mux.unlock();
+			msleep(5);
+			continue;
+		}
+		//读取到数据判断数据类型
+		if (demux->IsAudio(pkt)) {
+
+			if (at) at->Push(pkt);
+		}
+		else {
+			if (vt)vt->Push(pkt);
+		}
+
+		mux.unlock();
+	}
+
+}
+
 //一般头文件中不引入.h文件，再cpp中引入
 bool XDemuxThread::Open(const char* url, IVideoCall* call)
 {
@@ -22,23 +55,37 @@ bool XDemuxThread::Open(const char* url, IVideoCall* call)
 	}
 	//打开视频解码器和处理线程
 	if (!vt->Open(demux->CopyVPara(), call, demux->width, demux->height)) {
-	
 		re = false;
 		cout << "vt->Open failed!" << endl;
 	};
 
-	if (!at ->Open(demux->CopyAPara(), demux->sampleRate, demux->channels)) {
+	if (!at->Open(demux->CopyAPara(), demux->sampleRate, demux->channels)) {
 		re = false;
 		cout << "at->Open failed!" << endl;
-	
+
 	}
 	cout << "XDemuxThread::Open!" << endl;
 	mux.unlock();
 	return true;
 };
+
+//启动所有线程
+void XDemuxThread::Start()
+{
+	mux.lock();
+	QThread::start();
+	if (vt) vt->start();
+	if (at) at->start();
+	mux.unlock();
+
+};
+
+
 XDemuxThread::XDemuxThread()
 {
 };
 XDemuxThread::~XDemuxThread()
 {
+	isExit = true;
+	wait();
 };

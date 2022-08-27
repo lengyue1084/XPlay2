@@ -91,6 +91,7 @@ public:
     XResample resample*/
     XVideoWidget *video = 0;
 };
+#include "XDemuxThread.h"
 //v123.mp4
 int main(int argc, char *argv[])
 {
@@ -100,14 +101,19 @@ int main(int argc, char *argv[])
     vdecode.Close();*/
 
   
-    TestThread tt;
+    //TestThread tt;
     QApplication a(argc, argv);
     XPlay2 w;
     w.show();
     //³õÊ¼»¯gl´°¿Ú
     //w.ui.video->Init(tt.demux.width,tt.demux.height);
-    tt.video = w.ui.video;
-    tt.Init();
-    tt.start();
+    //tt.video = w.ui.video;
+    //tt.Init();
+    //tt.start();
+
+
+    XDemuxThread dt;
+    dt.Open("v123.mp4",w.ui.video);
+    dt.Start();
     return a.exec();
 }
