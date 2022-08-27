@@ -26,7 +26,7 @@ void XDemuxThread::run()
 		//没有读取到视频帧
 		if (!pkt) {
 			mux.unlock();
-			msleep(10);
+			msleep(5);
 			continue;
 		}
 		//读取到数据判断数据类型
@@ -34,11 +34,12 @@ void XDemuxThread::run()
 
 			if (at) at->Push(pkt);
 		}
-		else {
+		else {//视频
 			if (vt)vt->Push(pkt);
 		}
 
 		mux.unlock();
+		msleep(1);
 	}
 
 }
@@ -48,9 +49,6 @@ bool XDemuxThread::Open(const char* url, IVideoCall* call)
 {
 	if (url == 0 || url[0] == '\0') return false;
 	mux.lock();
-	if (!demux) demux = new XDemux();
-	if (!vt) vt = new XVideoThread();
-	if (!at) at = new XAudioThread();
 
 	//打开解封装
 	bool re = demux->Open(url);
@@ -79,6 +77,9 @@ bool XDemuxThread::Open(const char* url, IVideoCall* call)
 void XDemuxThread::Start()
 {
 	mux.lock();
+	if (!demux) demux = new XDemux();
+	if (!vt) vt = new XVideoThread();
+	if (!at) at = new XAudioThread();
 	QThread::start();
 	if (vt) vt->start();
 	if (at) at->start();

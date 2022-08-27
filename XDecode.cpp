@@ -71,7 +71,7 @@ bool XDecode::Open(AVCodecParameters *para)
 		return false;
 	}
 	mux.unlock();
-	cout << "video avcodec_open2 success!" << endl;
+	//cout << "video avcodec_open2 success!" << endl;
 	return true;
 };
 
@@ -110,7 +110,7 @@ AVFrame *XDecode::Recv()
 		return NULL;
 	}
 
-	cout << "[" << frame->linesize[0] << "] " << flush;
+	//cout << "[" << frame->linesize[0] << "] " << flush;
 
 	pts = frame->pts;
 	//av_frame_free(&frame);

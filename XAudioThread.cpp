@@ -67,7 +67,7 @@ bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 		re = false;
 	}
 	mux.unlock();
-	cout << "XAudioThread open :" << re << endl;
+	//cout << "XAudioThread open :" << re << endl;
 	return re;
 
 };
@@ -99,7 +99,7 @@ void XAudioThread::run()
 			if (!frame) break;
 			//减去缓冲中未播放的时间
 			pts = decode->pts - ap->GetNoPlayMs();
-			cout << "audio pts = " << pts << endl;
+			//cout << "audio pts = " << pts << endl;
 			//重采样
 			int size = res->Resample(frame,pcm);//会释放frame空间，此处不需要释放
 
