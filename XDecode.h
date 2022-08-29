@@ -1,9 +1,10 @@
 #pragma once
-#include "mutex"
+#include <mutex>
 struct AVCodecParameters;
 struct AVCodecContext;
 struct AVFrame;
 struct AVPacket;
+extern void XFreePacket(AVPacket **pkt);
 class XDecode
 {
 public:

@@ -8,26 +8,32 @@ XDecode::XDecode() {
 };
 XDecode::~XDecode() {
 };
- void XDecode::Close()
+
+void XFreePacket(AVPacket** pkt)
 {
-	 mux.lock();
-	 if (codec) {//关闭的时候清理解码缓存了
-		 avcodec_close(codec);
-		 avcodec_free_context(&codec);
-	 }
-	 pts = 0;
-	 mux.unlock();
+	if (!pkt || (*pkt)) return;
+	av_packet_free(pkt);
+}
+void XDecode::Close()
+{
+	mux.lock();
+	if (codec) {//关闭的时候清理解码缓存了
+		avcodec_close(codec);
+		avcodec_free_context(&codec);
+	}
+	pts = 0;
+	mux.unlock();
 }
 
- void XDecode::Clear() {
-	 mux.lock();
-	 //清理解码缓冲
-	 if (codec) avcodec_flush_buffers(codec);
-	 mux.unlock();
+void XDecode::Clear() {
+	mux.lock();
+	//清理解码缓冲
+	if (codec) avcodec_flush_buffers(codec);
+	mux.unlock();
 
 }
 
-bool XDecode::Open(AVCodecParameters *para)
+bool XDecode::Open(AVCodecParameters* para)
 {
 	//Close();
 	if (!para) return false;
@@ -35,7 +41,7 @@ bool XDecode::Open(AVCodecParameters *para)
 	//////////////////////////////////////////////////////////
 	///视频解码器打开
 	///找到视频解码器
-	AVCodec *vcodec = avcodec_find_decoder(para->codec_id);
+	AVCodec* vcodec = avcodec_find_decoder(para->codec_id);
 	if (!vcodec)
 	{
 		avcodec_parameters_free(&para);
@@ -46,7 +52,7 @@ bool XDecode::Open(AVCodecParameters *para)
 
 	mux.lock();//此处开始访问共享变量
 	//AVCodecContext *codec = avcodec_alloc_context3(vcodec);
-	 codec = avcodec_alloc_context3(vcodec);
+	codec = avcodec_alloc_context3(vcodec);
 
 	///配置解码器上下文参数
 	int re = avcodec_parameters_to_context(codec, para);
@@ -59,7 +65,7 @@ bool XDecode::Open(AVCodecParameters *para)
 	codec->thread_count = 8;
 
 	///打开解码器上下文
-	 re = avcodec_open2(codec, 0, 0);
+	re = avcodec_open2(codec, 0, 0);
 	if (re != 0)
 	{
 		avcodec_free_context(&codec);
@@ -76,7 +82,7 @@ bool XDecode::Open(AVCodecParameters *para)
 };
 
 //发送到解码线程，不管成功与否清理pkt空间，对象和媒体内容空间
-bool XDecode::Send(AVPacket *pkt) {
+bool XDecode::Send(AVPacket* pkt) {
 
 	// 盘错
 	if (!pkt || pkt->size <= 0 || !pkt->data) return false;
@@ -85,7 +91,7 @@ bool XDecode::Send(AVPacket *pkt) {
 		mux.unlock();
 		return false;
 	}
-	int re = avcodec_send_packet(codec,pkt);
+	int re = avcodec_send_packet(codec, pkt);
 	mux.unlock();
 	av_packet_free(&pkt);//与分配是成对的
 	if (re != 0) return false;
@@ -95,17 +101,17 @@ bool XDecode::Send(AVPacket *pkt) {
 
 //获取解码数据，一次send可能需要多次Recv,获取缓冲中的数据Send NULL再Recv中多次
 //每次赋值一份，由调用者释放av_frame_free
-AVFrame *XDecode::Recv() 
+AVFrame* XDecode::Recv()
 {
 	mux.lock();
 	if (!codec) { //如果解码器不存在
 		mux.unlock();
 		return NULL;
 	}
-	AVFrame *frame = av_frame_alloc();
-	int re = avcodec_receive_frame(codec,frame);
+	AVFrame* frame = av_frame_alloc();
+	int re = avcodec_receive_frame(codec, frame);
 	mux.unlock();
-	if (re !=0) {
+	if (re != 0) {
 		av_frame_free(&frame);
 		return NULL;
 	}

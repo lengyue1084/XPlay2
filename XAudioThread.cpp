@@ -11,39 +11,16 @@ extern "C" {
 }
 using namespace std;
 
-void XAudioThread::Push(AVPacket* pkt) 
-{
-	if (!pkt) return;
-	//阻塞
-	while (!isExit)
-	{
-		mux.lock();
-		if (packs.size() < maxList) {
-			packs.push_back(pkt);
-			mux.unlock();
-			break;
-		}
-		msleep(1);
-		mux.unlock();
-	
-
-	}
-
-
-
-};
-
-
 bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 {
 	if (!para) return false;
-
-	mux.lock();
+	Clear();
+	amux.lock();
 	//不受上一次的影响
 	pts = 0;
-	if (!decode) decode = new XDecode();
+	/*if (!decode) decode = new XDecode();
 	if (!res) res = new XResample();
-	if (!ap) ap = XAudioPlay::Get();
+	if (!ap) ap = XAudioPlay::Get();*/
 	bool re = true;
 	if (!res->Open(para,false)) {
 		//mux.unlock();
@@ -66,28 +43,30 @@ bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 		//return false;
 		re = false;
 	}
-	mux.unlock();
+	amux.unlock();
 	//cout << "XAudioThread open :" << re << endl;
 	return re;
 
 };
+//音频不需要考虑同步问题，采用的是视频同步音频的方案
 void XAudioThread::run()
 {
 	unsigned char* pcm = new unsigned char[1024 * 1024 * 10];
 	while (!isExit) {
-		mux.lock();
-		//如果没有数据
-		if (packs.empty() || !decode || !res || !ap) {
-			mux.unlock();
-			msleep(1);
-			continue;
-		}
+		amux.lock();
+		////如果没有数据
+		//if (packs.empty() || !decode || !res || !ap) {
+		//	amux.unlock();
+		//	msleep(1);
+		//	continue;
+		//}
 	
-		AVPacket *pkt = packs.front();
-		packs.pop_front();
+		//AVPacket *pkt = packs.front();
+		//packs.pop_front();
+		AVPacket* pkt = Pop();
 		bool re = decode->Send(pkt);
 		if (!re) {
-			mux.unlock();
+			amux.unlock();
 			msleep(1);
 			continue;
 		}
@@ -120,13 +99,16 @@ void XAudioThread::run()
 			}
 		}
 
-		mux.unlock();
+		amux.unlock();
 	}
 	delete []pcm;
+	//delete pcm;
 
 };
 XAudioThread::XAudioThread()
 {
+	if (!res) res = new XResample();
+	if (!ap) ap = XAudioPlay::Get();
 
 };
 XAudioThread::~XAudioThread()
