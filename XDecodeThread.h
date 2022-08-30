@@ -15,6 +15,7 @@ public:
 
 	//清理队列
 	virtual void Clear();
+	//清理资源，停止线程
 	virtual void Close();
 
 	//取出一帧数据，并出栈，如果没有返回NULL

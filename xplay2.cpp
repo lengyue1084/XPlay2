@@ -13,7 +13,12 @@ XPlay2::XPlay2(QWidget* parent)
 }
 
 XPlay2::~XPlay2()
-{}
+{
+	//¹Ø±Õdt
+	dt.Close();
+
+
+}
 
 void XPlay2::openFile()
 {

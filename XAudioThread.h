@@ -18,6 +18,9 @@ public:
 	virtual bool Open(AVCodecParameters* para, int sampleRate, int channels);
 	//多个线程，所以需要一个list队列进行push,然后线程去读AVPacket数据
 	//virtual void Push(AVPacket *pkt);
+
+	//停止线程，清理资源
+	virtual void Close();
 	void run();
 	XAudioThread();
 	virtual ~XAudioThread();
@@ -29,7 +32,6 @@ public:
 protected:
 	//std::list<AVPacket*> packs;
 	std::mutex amux;
-	XDecode* decode = 0;
 	XAudioPlay* ap = 0;
 	XResample* res = 0;
 };

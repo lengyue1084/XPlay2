@@ -10,7 +10,28 @@ extern "C" {
 
 }
 using namespace std;
+//停止线程、关闭相关资源
+void XAudioThread::Close()
+{
+	//先调用父类的Close方法
+	XDecodeThread::Close();
+	if (res)
+	{
+		res->Close();
+		amux.lock();
+		delete res;
+		res = NULL;
+		amux.unlock();
+	}
 
+	if (ap)
+	{
+		ap->Close();
+		amux.lock();
+		ap = NULL;//不需要delete
+		amux.unlock();
+	}
+}
 bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 {
 	if (!para) return false;
@@ -64,6 +85,11 @@ void XAudioThread::run()
 		//AVPacket *pkt = packs.front();
 		//packs.pop_front();
 		AVPacket* pkt = Pop();
+		/*if (!pkt) {
+			amux.unlock();
+			msleep(5);
+			continue;
+		}*/
 		bool re = decode->Send(pkt);
 		if (!re) {
 			amux.unlock();
@@ -107,6 +133,7 @@ void XAudioThread::run()
 };
 XAudioThread::XAudioThread()
 {
+
 	if (!res) res = new XResample();
 	if (!ap) ap = XAudioPlay::Get();
 

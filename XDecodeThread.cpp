@@ -22,6 +22,14 @@ void XDecodeThread::Clear()
 }
 void XDecodeThread::Close()
 {
+	Clear();
+	isExit = true;
+	wait();
+	decode->Close();
+	mux.lock();
+	delete decode;
+	decode = NULL;
+	mux.unlock();
 
 }
 //取出一帧数据，并出栈，如果没有返回NULL
@@ -33,7 +41,7 @@ AVPacket* XDecodeThread::Pop()
 		mux.unlock();
 		return NULL;
 	}
-	AVPacket* pkt = packs.front();
+	AVPacket *pkt = packs.front();
 	packs.pop_front();
 	mux.unlock();
 

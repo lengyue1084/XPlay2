@@ -14,7 +14,6 @@ class XVideoThread : public XDecodeThread
 public:
 	//打开,成功与否都要清理资源
 	virtual bool Open(AVCodecParameters* para, IVideoCall* call, int width, int herght);
-
 	void run();
 
 
