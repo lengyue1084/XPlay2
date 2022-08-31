@@ -69,12 +69,25 @@ bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 	return re;
 
 };
+
+void XAudioThread::SetPause(bool isPause)
+{
+	//amux.lock();
+	this->isPause = isPause;
+	if (ap) ap->SetPause(isPause);
+	//amux.unlock();
+}
 //音频不需要考虑同步问题，采用的是视频同步音频的方案
 void XAudioThread::run()
 {
 	unsigned char* pcm = new unsigned char[1024 * 1024 * 10];
 	while (!isExit) {
 		amux.lock();
+		if (isPause) {
+			amux.unlock();
+			msleep(5);
+			continue;
+		}
 		////如果没有数据
 		//if (packs.empty() || !decode || !res || !ap) {
 		//	amux.unlock();
@@ -114,7 +127,7 @@ void XAudioThread::run()
 			{
 				if (size <= 0) break;
 				//缓冲未播放完，空间不够
-				if (ap->GetFree() < size) {
+				if (ap->GetFree() < size || isPause) {
 					msleep(1);
 					continue;
 				}

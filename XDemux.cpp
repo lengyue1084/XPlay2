@@ -47,7 +47,7 @@ bool XDemux::Open(const char *url)
 	re = avformat_find_stream_info(ic, 0);
 
 	//总时长 毫秒
-	totalMs = ic->duration / (AV_TIME_BASE / 1000);
+	this->totalMs = ic->duration / (AV_TIME_BASE / 1000);
 	cout << "totalMs = " << totalMs << endl;
 
 	//打印视频流详细信息

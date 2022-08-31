@@ -11,8 +11,17 @@ public:
     //XPlay2(QWidget *parent = nullptr);
     XPlay2(QWidget* parent = Q_NULLPTR);
     ~XPlay2();
+
+    //重载定时器的方法 显示滑动条
+    void timerEvent(QTimerEvent * e);
+    //窗口尺寸变化
+    void resizeEvent(QResizeEvent *e);
+    //双击全屏
+    void mouseDoubleClickEvent(QMouseEvent *e);
+    void SetPause(bool isPause);
 public slots:
-    void openFile();
+    void OpenFile();
+    void PlayOrPause();
    
 
 private:

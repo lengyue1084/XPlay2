@@ -10,17 +10,66 @@ XPlay2::XPlay2(QWidget* parent)
 	ui.setupUi(this);
 	//dt = new XDemuxThread();
 	dt.Start();
+	startTimer(40);//40毫秒，一秒钟八十五帧
 }
 
 XPlay2::~XPlay2()
 {
 	//关闭dt
 	dt.Close();
-
+}
+void XPlay2::mouseDoubleClickEvent(QMouseEvent* e)
+{
+	if (isFullScreen()) {
+		this->showNormal();
+	}
+	else {
+		this->showFullScreen();
+	}
+}
+//窗口尺寸变化
+void XPlay2::resizeEvent(QResizeEvent* e)
+{
+	ui.playPos->move(50,this->height() - 50);
+	ui.playPos->resize(this->width() - 100,ui.playPos->height());
+	ui.openFile->move(50,this->height() - 100);
+	ui.isplay->move(ui.openFile->x() + ui.openFile->width() + 10, ui.openFile->y());
+	ui.video->resize(this->size());
 
 }
 
-void XPlay2::openFile()
+void XPlay2::PlayOrPause() 
+{
+	bool isPause = !dt.isPause;
+	SetPause(isPause);
+	dt.SetPause(isPause);
+
+}
+
+void XPlay2::SetPause(bool isPause) 
+{
+	if (isPause) {
+		ui.isplay->setText(QString::fromLocal8Bit("播 放"));
+	}
+	else {
+		ui.isplay->setText(QString::fromLocal8Bit("暂 停"));
+	}
+
+}
+//一秒钟25帧是比较适合人眼的
+// 定时器显示进度条
+void XPlay2::timerEvent(QTimerEvent* e)
+{
+	long long total = dt.totalMs;
+	if (total > 0) {
+		double pos = dt.pts / (double)total;
+		int v = ui.playPos->maximum() * pos;
+		ui.playPos->setValue(v);
+	}
+
+}
+
+void XPlay2::OpenFile()
 {
 	//打开文件
 	QString name = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("选择视频文件"));
@@ -30,6 +79,7 @@ void XPlay2::openFile()
 		QMessageBox::information(0,"error","open file failed");
 		return;
 	}
+	SetPause(dt.isPause);
 	//qDebug() << name;
 }
 

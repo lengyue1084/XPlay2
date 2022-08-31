@@ -24,6 +24,8 @@ public:
 	void run();
 	XAudioThread();
 	virtual ~XAudioThread();
+	bool isPause = false;
+	void SetPause(bool isPause);
 
 	////最大队列
 	//int maxList = 100*100;

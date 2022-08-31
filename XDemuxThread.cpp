@@ -5,12 +5,26 @@
 #include <iostream>
 using namespace std;
 
+//暂停设计vt/at暂停的问题
+void XDemuxThread::SetPause(bool isPause)
+{
+	mux.lock();
+	this->isPause = isPause;
+	if (at) at->SetPause(isPause);
+	if (vt) vt->SetPause(isPause);
+	mux.unlock();
+}
 void XDemuxThread::run()
 {
 
 	while (!isExit)
 	{
 		mux.lock();
+		if (isPause) {
+			mux.unlock();
+			msleep(5);
+			continue;
+		}
 		if (!demux) {
 			mux.unlock();
 			msleep(5);
@@ -20,6 +34,7 @@ void XDemuxThread::run()
 		//音视频同步，没有考虑只有音频或者视频的情况
 		if (vt && at)
 		{
+			pts = at->pts;
 			vt->synpts = at->pts;
 		}
 		AVPacket* pkt = demux->Read();
@@ -68,7 +83,10 @@ bool XDemuxThread::Open(const char* url, IVideoCall* call)
 		cout << "at->Open failed!" << endl;
 
 	}
-	cout << "XDemuxThread::Open!" << endl;
+	//cout << "XDemuxThread::Open!" << endl;
+
+	totalMs = demux->totalMs;//总时长
+	//this->totalMs = demux->totalMs;//总时长
 	mux.unlock();
 	return true;
 };

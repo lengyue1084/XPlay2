@@ -23,17 +23,46 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="openFile">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>560</y>
+     <x>80</x>
+     <y>620</y>
      <width>82</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>打开文件</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="playPos">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>680</y>
+     <width>1101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>999</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="isplay">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>640</y>
+     <width>82</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>播 放</string>
    </property>
   </widget>
  </widget>
@@ -50,23 +79,40 @@
  </resources>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>isplay</sender>
    <signal>clicked()</signal>
    <receiver>XPlay2Class</receiver>
-   <slot>openFile()</slot>
+   <slot>PlayOrPause()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>220</x>
-     <y>563</y>
+     <x>696</x>
+     <y>653</y>
     </hint>
     <hint type="destinationlabel">
-     <x>290</x>
-     <y>845</y>
+     <x>682</x>
+     <y>882</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openFile</sender>
+   <signal>clicked()</signal>
+   <receiver>XPlay2Class</receiver>
+   <slot>OpenFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>623</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>809</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>openFile()</slot>
+  <slot>OpenFile()</slot>
+  <slot>PlayOrPause()</slot>
  </slots>
 </ui>

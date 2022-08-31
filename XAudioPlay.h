@@ -15,6 +15,7 @@ public:
 	virtual bool Write(const unsigned char* data, int datasize) = 0;
 	//判断是否有足够的空间来写入音频信息
 	virtual int GetFree() = 0;
+	virtual void SetPause(bool isPause) = 0;
 
 	//播放的话只有一个对象
 	static XAudioPlay* Get();

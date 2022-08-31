@@ -25,11 +25,22 @@ bool XVideoThread::Open(AVCodecParameters* para, IVideoCall* call, int width, in
 	cout << "XAudioThread open :" << re << endl;
 	return re;
 }
-
+void XVideoThread::SetPause(bool isPause)
+{
+	vmux.lock();
+	this->isPause = isPause;
+	vmux.unlock();
+}
 void  XVideoThread::run()
 {
 	while (!isExit) {
 		vmux.lock();
+		if (this->isPause) {
+			vmux.unlock();
+			msleep(5);
+			continue;
+		
+		}
 		//音视频同步，如果快了就等待一下
 		//这里需要考虑没有音频的情况
 		if (synpts > 0 && synpts < decode->pts) {
@@ -67,6 +78,7 @@ void  XVideoThread::run()
 			if (!frame) break;
 			//显示视频
 			if (call) {
+				//刷新画面
 				call->Repaint(frame);
 			}
 

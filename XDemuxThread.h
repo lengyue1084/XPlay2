@@ -19,6 +19,12 @@ public:
 	XDemuxThread();
 	~XDemuxThread();
 	bool isExit = false;
+	bool isPause = false;
+	//暂停设计vt/at暂停的问题
+	void SetPause(bool isPause);
+
+	long long pts = 0;
+	long long totalMs = 0;//两数相除得到一个百分比
 protected:
 	std::mutex mux;
 	XDemux* demux = 0;
