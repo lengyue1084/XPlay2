@@ -110,9 +110,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>playPos</sender>
+   <signal>sliderPressed()</signal>
+   <receiver>XPlay2Class</receiver>
+   <slot>SliderPress()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>688</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>240</x>
+     <y>868</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>playPos</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>XPlay2Class</receiver>
+   <slot>SliderRelease()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>685</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>293</x>
+     <y>820</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OpenFile()</slot>
   <slot>PlayOrPause()</slot>
+  <slot>SliderPress()</slot>
+  <slot>SliderRelease()</slot>
  </slots>
 </ui>

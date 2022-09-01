@@ -9,6 +9,7 @@ public:
 	//打开音频播放，定义为纯虚函数，实现放在继承类当中
 	virtual bool Open() = 0;
 	virtual void Close() = 0;
+	virtual void Clear() = 0;
 	//返回缓存中还没有播放的时间ms
 	virtual long long GetNoPlayMs() = 0;
 	//播放音频

@@ -38,13 +38,14 @@ public:
 
 	int sampleRate = 0;//样本率
 	int channels = 0;
+	//音视频索引，读取时区分音视频
+	int videoStream = 0;
+	int audioStream = 1;
 
 protected:
 	std::mutex mux;
 	//解封装上下文
 	AVFormatContext *ic = NULL;
-	//音视频索引，读取时区分音视频
-	int videoStream = 0;
-	int audioStream = 1;
+
 };
 

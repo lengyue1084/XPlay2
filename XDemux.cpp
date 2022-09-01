@@ -122,7 +122,7 @@ bool XDemux::Seek(double pos)
 		mux.unlock();
 		return false;
 	}
-	long long seekPos = 0;
+
 	//考虑ic->streams[videoStream]->duration 不存在的情况
 	//if(!ic->streams[videoStream]->duration) {
 	//	//pos = (double)ms / (double)1000 * r2d(ic->streams[pkt->stream_index]->time_base);
@@ -133,6 +133,7 @@ bool XDemux::Seek(double pos)
 		mux.unlock();
 		return false;
 	}
+	long long seekPos = 0;
 	seekPos = ic->streams[videoStream]->duration * pos;
 
 	//int ms = 3000; //三秒位置 根据时间基数（分数）转换
@@ -140,6 +141,7 @@ bool XDemux::Seek(double pos)
 	//seek只是往后跳到关键帧，实际帧还是需要业务来做的，这里需要跟解码模块关联
 	re = av_seek_frame(ic, videoStream, seekPos, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
 	mux.unlock();
+	if (re < 0) return false;
 	return true;
 };
 

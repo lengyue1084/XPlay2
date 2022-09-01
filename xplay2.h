@@ -22,8 +22,12 @@ public:
 public slots:
     void OpenFile();
     void PlayOrPause();
+    void SliderPress();
+    void SliderRelease();
    
 
 private:
+    //滑动条是否按住
+    bool isSliderPress = false;
     Ui::XPlay2Class ui;
 };

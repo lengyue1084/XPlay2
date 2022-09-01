@@ -48,6 +48,14 @@ public:
 		mux.unlock();
 		return pts;
 	}
+	virtual void Clear() {
+		mux.lock();
+		if (io) {
+			io->reset();
+		}
+		mux.unlock();
+	
+	}
 	virtual void Close() {
 		mux.lock();
 		if (io) {

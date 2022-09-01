@@ -10,6 +10,14 @@ extern "C" {
 
 }
 using namespace std;
+void XAudioThread::Clear()
+{
+	XDecodeThread::Clear();
+	mux.lock();
+	if (ap) ap->Clear();
+	mux.unlock();
+
+}
 //停止线程、关闭相关资源
 void XAudioThread::Close()
 {

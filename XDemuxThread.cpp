@@ -3,8 +3,66 @@
 #include "XVideoThread.h"
 #include "XAudioThread.h"
 #include <iostream>
-using namespace std;
+extern "C" {
 
+#include <libavformat/avformat.h>
+}
+#include "XDecode.h"
+using namespace std;
+void XDemuxThread::Clear()
+{
+	mux.lock();
+	if (demux) demux->Clear();
+	if (vt) vt->Clear();
+	if (at) at->Clear();
+
+	mux.unlock();
+}
+void XDemuxThread::Seek(double pos)
+{
+	//清理缓存
+	Clear();
+	mux.lock();
+	bool status = this->isPause;
+	mux.unlock();
+	//暂停
+	SetPause(true);
+
+	mux.lock();
+	if (demux)
+		demux->Seek(pos);
+	//实际要显示的位置pts
+
+	long long seekPts = pos * demux->totalMs;
+	while (!isExit)
+	{
+		AVPacket* pkt = demux->Read();
+		if (!pkt) break;
+		if (pkt->stream_index == demux->audioStream) {
+
+			//是音频数据,丢弃
+			av_packet_free(&pkt);
+			continue;
+		}
+		bool re = vt->decode->Send(pkt);
+		if (!re) break;
+		AVFrame* frame = vt->decode->Recv();
+		if (!frame) continue;
+		//到达位置
+		if (frame->pts >= seekPts) {
+
+			this->pts = frame->pts;
+			vt->call->Repaint(frame);
+			break;
+		}
+		av_frame_free(&frame);
+
+	}
+	mux.unlock();
+	//seek是非暂停状态，恢复播放
+	if (!status)
+		SetPause(false);
+}
 //暂停设计vt/at暂停的问题
 void XDemuxThread::SetPause(bool isPause)
 {
