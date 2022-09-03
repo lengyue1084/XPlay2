@@ -88,6 +88,34 @@ void  XVideoThread::run()
 	}
 
 };
+//解码pts，如果接收到的解码数据 pts >= seekpts return true,并且显示画面
+bool XVideoThread::RepaintPts(AVPacket* pkt, long long seekpts)
+{
+	vmux.lock();
+	bool re = decode->Send(pkt);
+	if (!re) {//表示结束解码
+		vmux.unlock();
+		return false;
+	}
+	AVFrame* frame = decode->Recv();
+	if (!frame) {//false继续下一次处理
+		vmux.unlock();
+		return false;
+	}
+	//到达位置
+	if (decode->pts >= seekpts) {
+		if (call) {
+			call->Repaint(frame);
+			vmux.unlock();
+			return true;//到了最后一帧
+		}
+	}
+	XFreeFrame(&frame);
+	vmux.unlock();
+
+	return false;
+}
+
 
 XVideoThread::XVideoThread()
 {

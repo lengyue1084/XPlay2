@@ -67,6 +67,9 @@
     <ClCompile Include="XDecodeThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XSlider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XDemux.h">
@@ -99,6 +102,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="XVideoWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="XSlider.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

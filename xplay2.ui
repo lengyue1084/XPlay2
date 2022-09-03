@@ -36,7 +36,7 @@
     <string>打开文件</string>
    </property>
   </widget>
-  <widget class="QSlider" name="playPos">
+  <widget class="XSlider" name="playPos">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -72,6 +72,11 @@
    <class>XVideoWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>xvideowidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XSlider</class>
+   <extends>QSlider</extends>
+   <header>XSlider.h</header>
   </customwidget>
  </customwidgets>
  <resources>

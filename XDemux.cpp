@@ -193,6 +193,36 @@ bool XDemux::IsAudio(AVPacket *pkt)
 };
 
 
+//只读视频，音频丢弃，空间释放
+ AVPacket* XDemux::ReadVideo()
+{
+	 mux.lock();
+	 if (!ic) {
+		 mux.unlock();
+		 return 0;
+	 }
+	 mux.unlock();
+	 AVPacket* pkt = NULL;
+	 //防止阻塞,读取20帧如果读不到就默认读不到
+	 for (int i = 0; i < 20;i++) {
+	 
+		 pkt = Read();
+		 if (!pkt) {
+			 break;
+		 }
+		 //只读video帧
+		 if (pkt->stream_index == videoStream) {
+			 break;
+		 }
+		 //读取到其他帧（音频）释放掉
+		 av_packet_free(&pkt);
+	 
+	 }
+
+	 return pkt;
+
+
+}
 //空间需要调用者释放，释放AVPacket对象空间，和数据空间 av_packet_free
 AVPacket *XDemux::Read()
 {

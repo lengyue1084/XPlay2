@@ -4,8 +4,8 @@
 using namespace std;
 #include "XDemux.h"
 #include "XDecode.h"
-#include "XResample.h"
-#include "XAudioPlay.h"
+//#include "XResample.h"
+//#include "XAudioPlay.h"
 extern "C" {
 #include "libavcodec/avcodec.h"
 }

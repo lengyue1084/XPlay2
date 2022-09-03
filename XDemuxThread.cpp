@@ -32,30 +32,34 @@ void XDemuxThread::Seek(double pos)
 	if (demux)
 		demux->Seek(pos);
 	//实际要显示的位置pts
-
 	long long seekPts = pos * demux->totalMs;
 	while (!isExit)
 	{
-		AVPacket* pkt = demux->Read();
+		AVPacket* pkt = demux->ReadVideo();
 		if (!pkt) break;
-		if (pkt->stream_index == demux->audioStream) {
+		//if (pkt->stream_index == demux->audioStream) {
 
-			//是音频数据,丢弃
-			av_packet_free(&pkt);
-			continue;
-		}
-		bool re = vt->decode->Send(pkt);
-		if (!re) break;
-		AVFrame* frame = vt->decode->Recv();
-		if (!frame) continue;
-		//到达位置
-		if (frame->pts >= seekPts) {
-
-			this->pts = frame->pts;
-			vt->call->Repaint(frame);
+		//	//是音频数据,丢弃
+		//	av_packet_free(&pkt);
+		//	continue;
+		//}
+		//如果解码到seekPts(pkt的pts与解码出来的pts不一致问题)
+		if (vt->RepaintPts(pkt, seekPts)) {
+			this->pts = seekPts;//指定的位置则跳出
 			break;
 		}
-		av_frame_free(&frame);
+		//bool re = vt->decode->Send(pkt);
+		//if (!re) break;//表示结束解码
+		//AVFrame* frame = vt->decode->Recv();
+		//if (!frame) continue;
+		////到达位置
+		//if (frame->pts >= seekPts) {
+
+		//	this->pts = frame->pts;
+		//	vt->call->Repaint(frame);
+		//	break;
+		//}
+		//av_frame_free(&frame);
 
 	}
 	mux.unlock();

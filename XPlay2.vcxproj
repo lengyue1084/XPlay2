@@ -61,7 +61,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>../../include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>../../lib/win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -100,6 +100,7 @@
     <ClCompile Include="XDecodeThread.cpp" />
     <ClCompile Include="XDemuxThread.cpp" />
     <ClCompile Include="XResample.cpp" />
+    <ClCompile Include="XSlider.cpp" />
     <ClCompile Include="XVideoThread.cpp" />
     <ClCompile Include="XVideoWidget.cpp" />
     <QtRcc Include="xplay2.qrc" />
@@ -119,6 +120,7 @@
     <ClInclude Include="XDemux.h" />
     <ClInclude Include="XDemuxThread.h" />
     <ClInclude Include="XResample.h" />
+    <QtMoc Include="XSlider.h" />
     <ClInclude Include="XVideoThread.h" />
     <QtMoc Include="XVideoWidget.h" />
   </ItemGroup>
