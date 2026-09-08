@@ -30,7 +30,10 @@ add_executable(XPlay2 ${XPLAY2_SOURCES})
 if(MSVC)
     target_compile_options(XPlay2 PRIVATE /utf-8)
 endif()
-target_include_directories(XPlay2 PRIVATE "${FFMPEG_INCLUDE_DIR}")
+target_include_directories(XPlay2 PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${FFMPEG_INCLUDE_DIR}"
+)
 target_link_directories(XPlay2 PRIVATE "${FFMPEG_LIB_DIR}")
 target_link_libraries(XPlay2 PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Multimedia
     Qt6::OpenGL Qt6::OpenGLWidgets avformat avcodec avutil swresample swscale)
