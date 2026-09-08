@@ -6,11 +6,11 @@ struct SwrContext;
 class XResample
 {
 public:
-	//输出参数和输入参数一致除了采样格式，输出为S16,会释放para空间
+	//杈撳嚭鍙傛暟鍜岃緭鍏ュ弬鏁颁竴鑷撮櫎浜嗛噰鏍锋牸寮忥紝杈撳嚭涓篠16,浼氶噴鏀緋ara绌洪棿
 	virtual bool Open(AVCodecParameters *para,bool isClearPara = false);
 	virtual void Close();
 
-	//返回重采样的大小，不管成功与否都是放indata空间
+	//杩斿洖閲嶉噰鏍风殑澶у皬锛屼笉绠℃垚鍔熶笌鍚﹂兘鏄斁indata绌洪棿
 	virtual int Resample(AVFrame *indata,unsigned char *data);
 	XResample();
 	~XResample();

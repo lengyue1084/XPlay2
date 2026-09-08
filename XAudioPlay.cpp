@@ -1,11 +1,11 @@
 #include "XAudioPlay.h"
 #include <QAudioFormat>
-#include <QAudioOutput>
+#include <QAudioSink>
 #include <mutex>
 class CXAudioPlay :public XAudioPlay
 {
 public:
-	QAudioOutput* output = NULL;
+	QAudioSink* output = NULL;
 	QIODevice* io = NULL;
 	std::mutex mux;
 
@@ -13,14 +13,11 @@ public:
 		Close();
 		QAudioFormat fmt;
 		fmt.setSampleRate(sampleRate);
-		fmt.setSampleSize(sampleSize);
 		fmt.setChannelCount(channels);
-		fmt.setCodec("audio/pcm");
-		fmt.setByteOrder(QAudioFormat::LittleEndian);
-		fmt.setSampleType(QAudioFormat::UnSignedInt);
+		fmt.setSampleFormat(sampleSize == 8 ? QAudioFormat::UInt8 : QAudioFormat::Int16);
 		mux.lock();
-		output = new QAudioOutput(fmt);
-		io = output->start(); //¿ªÊ¼²¥·Å
+		output = new QAudioSink(fmt);
+		io = output->start(); //å¼€å§‹æ’­æ”¾
 		mux.unlock();
 		if (io) return true;
 		return false;
@@ -35,7 +32,7 @@ public:
 		long long pts = 0;
 		double size = output->bufferSize() - output->bytesFree();
 
-		//Ò»ÃëÒôÆµµÄ×Ö½Ú´óĞ¡
+		//ä¸€ç§’éŸ³é¢‘çš„å­—èŠ‚å¤§å°
 		double secSize = sampleRate * (sampleSize / 8) * channels;
 		if (secSize <= 0) {
 			pts = 0;
@@ -88,7 +85,7 @@ public:
 
 		mux.unlock();
 	}
-	//²¥·ÅÒôÆµ
+	//æ’­æ”¾éŸ³é¢‘
 	virtual bool Write(const unsigned char* data, int datasize)
 	{
 		if (!data || datasize <= 0) return false;
@@ -104,7 +101,7 @@ public:
 			return false;
 		return true;
 	};
-	//ÅĞ¶ÏÊÇ·ñÓĞ×ã¹»µÄ¿Õ¼äÀ´Ğ´ÈëÒôÆµĞÅÏ¢
+	//åˆ¤æ–­æ˜¯å¦æœ‰è¶³å¤Ÿçš„ç©ºé—´æ¥å†™å…¥éŸ³é¢‘ä¿¡æ¯
 	virtual int GetFree()
 	{
 		mux.lock();
@@ -121,7 +118,7 @@ public:
 };
 
 
-//²¥·ÅµÄ»°Ö»ÓĞÒ»¸ö¶ÔÏó
+//æ’­æ”¾çš„è¯åªæœ‰ä¸€ä¸ªå¯¹è±¡
 XAudioPlay* XAudioPlay::Get()
 {
 	static CXAudioPlay play;

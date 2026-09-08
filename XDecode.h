@@ -10,16 +10,16 @@ class XDecode
 {
 public:
 	bool isAudio = false;
-	//��ǰ���뵽��pts
+	//当前解码到的pts
 	long long pts = 0;
 
-	//�򿪽�����,�����Ƿ�ɹ������ͷſռ䣬����Ƶͨ��
+	//打开解码器,不管是否成功并且释放空间，音视频通用
 	virtual bool Open(AVCodecParameters *para);
 
-	//���͵������̣߳����ܳ¹��������pkt�ռ䣬�����ý�����ݿռ�
+	//发送到解码线程，不管陈宫与否清理pkt空间，对象和媒体内容空间
 	virtual bool Send(AVPacket *pkt);
-	//��ȡ�������ݣ�һ��send������Ҫ���Recv,��ȡ�����е�����Send NULL��Recv�ж��
-	//ÿ�θ�ֵһ�ݣ��ɵ������ͷ�av_frame_free
+	//获取解码数据，一次send可能需要多次Recv,获取缓冲中的数据Send NULL再Recv中多次
+	//每次赋值一份，由调用者释放av_frame_free
 	virtual AVFrame* Recv();
 
 	virtual void Close();
@@ -30,8 +30,8 @@ public:
 
 	protected:
 		AVCodecContext *codec = 0;
-		//ͷ�ļ��о�����Ҫʹ�������ռ䣬ͷ�ļ����ɿأ���������˭ʹ�ã�������ɳ�ͻ
-		//�����ռ��ֹͬ��������ͻ��cpp�ļ����Լ��ɿصĿ���ʹ�������ռ�
+		//头文件中尽量不要使用命名空间，头文件不可控，不晓得是谁使用，可能造成冲突
+		//命名空间防止同名函数冲突，cpp文件是自己可控的可以使用命名空间
 		std::mutex mux;
 	
 };

@@ -8,12 +8,12 @@ class XAudioThread;
 class XDemuxThread :public QThread
 {
 public:
-	//´´½¨¶ÔÏó²¢´ò¿ª
+	//åˆ›å»ºå¯¹è±¡å¹¶æ‰“å¼€
 	virtual bool Open(const char* url, IVideoCall* call);
 
-	//Æô¶¯ËùÓĞÏß³Ì
+	//å¯åŠ¨æ‰€æœ‰çº¿ç¨‹
 	virtual void Start();
-	//¹Ø±ÕÏß³ÌÇåÀí×ÊÔ´
+	//å…³é—­çº¿ç¨‹æ¸…ç†èµ„æº
 	virtual void Close();
 	virtual void Clear();
 	virtual void Seek(double pos);
@@ -22,11 +22,11 @@ public:
 	~XDemuxThread();
 	bool isExit = false;
 	bool isPause = false;
-	//ÔİÍ£Éè¼Ævt/atÔİÍ£µÄÎÊÌâ
+	//æš‚åœè®¾è®¡vt/atæš‚åœçš„é—®é¢˜
 	void SetPause(bool isPause);
 
 	long long pts = 0;
-	long long totalMs = 0;//Á½ÊıÏà³ıµÃµ½Ò»¸ö°Ù·Ö±È
+	long long totalMs = 0;//ä¸¤æ•°ç›¸é™¤å¾—åˆ°ä¸€ä¸ªç™¾åˆ†æ¯”
 protected:
 	std::mutex mux;
 	XDemux* demux = 0;

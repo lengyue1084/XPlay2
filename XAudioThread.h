@@ -6,22 +6,22 @@ struct AVCodecParameters;
 class XAudioPlay;
 class XResample;
 #include "XDecodeThread.h"
-//¹ÜÀíÒôÆµµÄ½âÂë¡¢ÖØ²ÉÑù¡¢²¥·ÅµÈ£¬Ïàµ±ÓÚmvcµÄc
+//ç®¡ç†éŸ³é¢‘çš„è§£ç ã€é‡é‡‡æ ·ã€æ’­æ”¾ç­‰ï¼Œç›¸å½“äºmvcçš„c
 class XAudioThread :public XDecodeThread
 {
 public:
 
-	//µ±Ç°²¥·ÅÒôÆµµÄpts
+	//å½“å‰æ’­æ”¾éŸ³é¢‘çš„pts
 	long long pts = 0;
 
-	//´ò¿ª,³É¹¦Óë·ñ¶¼ÒªÇåÀí×ÊÔ´
+	//æ‰“å¼€,æˆåŠŸä¸å¦éƒ½è¦æ¸…ç†èµ„æº
 	virtual bool Open(AVCodecParameters* para, int sampleRate, int channels);
-	//¶à¸öÏß³Ì£¬ËùÒÔĞèÒªÒ»¸ölist¶ÓÁĞ½øĞĞpush,È»ºóÏß³ÌÈ¥¶ÁAVPacketÊı¾İ
+	//å¤šä¸ªçº¿ç¨‹ï¼Œæ‰€ä»¥éœ€è¦ä¸€ä¸ªlisté˜Ÿåˆ—è¿›è¡Œpush,ç„¶åçº¿ç¨‹å»è¯»AVPacketæ•°æ®
 	//virtual void Push(AVPacket *pkt);
 
-	//Í£Ö¹Ïß³Ì£¬ÇåÀí×ÊÔ´
+	//åœæ­¢çº¿ç¨‹ï¼Œæ¸…ç†èµ„æº
 	virtual void Close();
-	//ÖØÔØClear()
+	//é‡è½½Clear()
 	virtual void Clear();
 	void run();
 	XAudioThread();
@@ -29,7 +29,7 @@ public:
 	bool isPause = false;
 	void SetPause(bool isPause);
 
-	////×î´ó¶ÓÁĞ
+	////æœ€å¤§é˜Ÿåˆ—
 	//int maxList = 100*100;
 	//bool isExit = false;
 

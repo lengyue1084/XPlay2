@@ -2,7 +2,7 @@
 #include "XDecode.h"
 #include <iostream>
 using namespace std;
-//´ò¿ª,³É¹¦Óë·ñ¶¼ÒªÇåÀí×ÊÔ´
+//æ‰“å¼€,æˆåŠŸä¸å¦éƒ½è¦æ¸…ç†èµ„æº
 bool XVideoThread::Open(AVCodecParameters* para, IVideoCall* call, int width, int herght)
 {
 	if (!para) return false;
@@ -10,7 +10,7 @@ bool XVideoThread::Open(AVCodecParameters* para, IVideoCall* call, int width, in
 
 	vmux.lock();
 	synpts = 0;
-	//³õÊ¼»¯ÏÔÊ¾´°¿Ú
+	//åˆå§‹åŒ–æ˜¾ç¤ºçª—å£
 	this->call = call;
 	if (call) {
 		call->Init(width,herght);
@@ -41,8 +41,8 @@ void  XVideoThread::run()
 			continue;
 		
 		}
-		//ÒôÊÓÆµÍ¬²½£¬Èç¹û¿ìÁË¾ÍµÈ´ıÒ»ÏÂ
-		//ÕâÀïĞèÒª¿¼ÂÇÃ»ÓĞÒôÆµµÄÇé¿ö
+		//éŸ³è§†é¢‘åŒæ­¥ï¼Œå¦‚æœå¿«äº†å°±ç­‰å¾…ä¸€ä¸‹
+		//è¿™é‡Œéœ€è¦è€ƒè™‘æ²¡æœ‰éŸ³é¢‘çš„æƒ…å†µ
 		if (synpts > 0 && synpts < decode->pts) {
 			vmux.unlock();
 			msleep(1);
@@ -55,7 +55,7 @@ void  XVideoThread::run()
 			vmux.unlock();
 			continue;
 		}*/
-		////Èç¹ûÃ»ÓĞÊı¾İ
+		////å¦‚æœæ²¡æœ‰æ•°æ®
 		//if (packs.empty() || !decode) {
 		//	vmux.unlock();
 		//	msleep(1);
@@ -71,14 +71,14 @@ void  XVideoThread::run()
 			continue;
 		}
 
-		//Ò»´Îsend,¶à´Îrecv
+		//ä¸€æ¬¡send,å¤šæ¬¡recv
 		while (!isExit)
 		{
 			AVFrame* frame = decode->Recv();
 			if (!frame) break;
-			//ÏÔÊ¾ÊÓÆµ
+			//æ˜¾ç¤ºè§†é¢‘
 			if (call) {
-				//Ë¢ĞÂ»­Ãæ
+				//åˆ·æ–°ç”»é¢
 				call->Repaint(frame);
 			}
 
@@ -88,26 +88,26 @@ void  XVideoThread::run()
 	}
 
 };
-//½âÂëpts£¬Èç¹û½ÓÊÕµ½µÄ½âÂëÊı¾İ pts >= seekpts return true,²¢ÇÒÏÔÊ¾»­Ãæ
+//è§£ç ptsï¼Œå¦‚æœæ¥æ”¶åˆ°çš„è§£ç æ•°æ® pts >= seekpts return true,å¹¶ä¸”æ˜¾ç¤ºç”»é¢
 bool XVideoThread::RepaintPts(AVPacket* pkt, long long seekpts)
 {
 	vmux.lock();
 	bool re = decode->Send(pkt);
-	if (!re) {//±íÊ¾½áÊø½âÂë
+	if (!re) {//è¡¨ç¤ºç»“æŸè§£ç 
 		vmux.unlock();
 		return false;
 	}
 	AVFrame* frame = decode->Recv();
-	if (!frame) {//false¼ÌĞøÏÂÒ»´Î´¦Àí
+	if (!frame) {//falseç»§ç»­ä¸‹ä¸€æ¬¡å¤„ç†
 		vmux.unlock();
 		return false;
 	}
-	//µ½´ïÎ»ÖÃ
+	//åˆ°è¾¾ä½ç½®
 	if (decode->pts >= seekpts) {
 		if (call) {
 			call->Repaint(frame);
 			vmux.unlock();
-			return true;//µ½ÁË×îºóÒ»Ö¡
+			return true;//åˆ°äº†æœ€åä¸€å¸§
 		}
 	}
 	XFreeFrame(&frame);

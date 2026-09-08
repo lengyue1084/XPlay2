@@ -15,23 +15,23 @@ static double r2d(AVRational r)
 bool XDemux::Open(const char *url) 
 {
 	Close();
-	//²ÎÊıÉèÖÃ
+	//å‚æ•°è®¾ç½®
 	AVDictionary* opts = NULL;
-	//ÉèÖÃrtspÁ÷ÒÑtcpĞ­Òé´ò¿ª
+	//è®¾ç½®rtspæµå·²tcpåè®®æ‰“å¼€
 	av_dict_set(&opts, "rtsp_transport", "tcp", 0);
 
-	//ÍøÂçÑÓÊ±Ê±¼ä
+	//ç½‘ç»œå»¶æ—¶æ—¶é—´
 	av_dict_set(&opts, "max_delay", "500", 0);
 
 
-	//½â·â×°ÉÏÏÂÎÄ
+	//è§£å°è£…ä¸Šä¸‹æ–‡
 	//AVFormatContext* ic = NULL;
 	mux.lock();
 	int re = avformat_open_input(
 		&ic,
 		url,
-		0,  // 0±íÊ¾×Ô¶¯Ñ¡Ôñ½â·âÆ÷
-		&opts //²ÎÊıÉèÖÃ£¬±ÈÈçrtspµÄÑÓÊ±Ê±¼ä
+		0,  // 0è¡¨ç¤ºè‡ªåŠ¨é€‰æ‹©è§£å°å™¨
+		&opts //å‚æ•°è®¾ç½®ï¼Œæ¯”å¦‚rtspçš„å»¶æ—¶æ—¶é—´
 	);
 	if (re != 0)
 	{
@@ -43,18 +43,18 @@ bool XDemux::Open(const char *url)
 	}
 	cout << "open " << url << " success! " << endl;
 
-	//»ñÈ¡Á÷ĞÅÏ¢ 
+	//è·å–æµä¿¡æ¯ 
 	re = avformat_find_stream_info(ic, 0);
 
-	//×ÜÊ±³¤ ºÁÃë
+	//æ€»æ—¶é•¿ æ¯«ç§’
 	this->totalMs = ic->duration / (AV_TIME_BASE / 1000);
 	cout << "totalMs = " << totalMs << endl;
 
-	//´òÓ¡ÊÓÆµÁ÷ÏêÏ¸ĞÅÏ¢
+	//æ‰“å°è§†é¢‘æµè¯¦ç»†ä¿¡æ¯
 	av_dump_format(ic, 0, url, 0);
 
-	//»ñÈ¡ÒôÊÓÆµÁ÷ĞÅÏ¢ £¨±éÀú£¬º¯Êı»ñÈ¡£©
-	//»ñÈ¡ÊÓÆµÁ÷
+	//è·å–éŸ³è§†é¢‘æµä¿¡æ¯ ï¼ˆéå†ï¼Œå‡½æ•°è·å–ï¼‰
+	//è·å–è§†é¢‘æµ
 	videoStream = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
 	AVStream* as = ic->streams[videoStream];
 	width = as->codecpar->width;
@@ -62,24 +62,24 @@ bool XDemux::Open(const char *url)
 	cout << "=============================================" << endl;
 	cout << "codec_id = " << as->codecpar->codec_id << endl;
 	cout << "format = " << as->codecpar->format << endl;
-	cout << videoStream << "ÊÓÆµĞÅÏ¢" << endl;
+	cout << videoStream << "è§†é¢‘ä¿¡æ¯" << endl;
 	cout << "width=" << as->codecpar->width << endl;
 	cout << "height=" << as->codecpar->height << endl;
 
-	//Ö¡ÂÊ fps ·ÖÊı×ª»»
+	//å¸§ç‡ fps åˆ†æ•°è½¬æ¢
 	cout << "video fps = " << r2d(as->avg_frame_rate) << endl;
 	cout << "=============================================" << endl;
-	//»ñÈ¡ÒôÆµÁ÷
+	//è·å–éŸ³é¢‘æµ
 	audioStream = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
 	as = ic->streams[audioStream];
-	sampleRate = as->codecpar->sample_rate;//Ñù±¾ÂÊ
+	sampleRate = as->codecpar->sample_rate;//æ ·æœ¬ç‡
 	channels = as->codecpar->channels;
 	cout << "codec_id = " << as->codecpar->codec_id << endl;
 	cout << "format = " << as->codecpar->format << endl;
 	cout << "sample_rate = " << as->codecpar->sample_rate << endl;
 	//AVSampleFormat;
 	cout << "channels = " << as->codecpar->channels << endl;
-	//Ò»Ö¡Êı¾İ£¿£¿ µ¥Í¨µÀÑù±¾Êı 
+	//ä¸€å¸§æ•°æ®ï¼Ÿï¼Ÿ å•é€šé“æ ·æœ¬æ•° 
 	cout << "frame_size = " << as->codecpar->frame_size << endl;
 	//1024 * 2 * 2 = 4096  fps = sample_rate/frame_size
 
@@ -87,7 +87,7 @@ bool XDemux::Open(const char *url)
 	return true;
 
 }
-//Çå¿Õ¶ÁÈ¡»º´æ
+//æ¸…ç©ºè¯»å–ç¼“å­˜
 void XDemux::Clear()
 {
 	mux.lock();
@@ -108,13 +108,13 @@ void  XDemux::Close() {
 		mux.unlock();
 		return;
 	}
-	avformat_close_input(&ic);//ÕâÀï»áÇå¿ÕËùÓĞ»º´æ
+	avformat_close_input(&ic);//è¿™é‡Œä¼šæ¸…ç©ºæ‰€æœ‰ç¼“å­˜
 	totalMs = 0;
 	mux.unlock();
 
 }
 
-//seek Î»ÖÃ 0.0~1.0
+//seek ä½ç½® 0.0~1.0
 bool XDemux::Seek(double pos)
 {
 	mux.lock();
@@ -123,11 +123,11 @@ bool XDemux::Seek(double pos)
 		return false;
 	}
 
-	//¿¼ÂÇic->streams[videoStream]->duration ²»´æÔÚµÄÇé¿ö
+	//è€ƒè™‘ic->streams[videoStream]->duration ä¸å­˜åœ¨çš„æƒ…å†µ
 	//if(!ic->streams[videoStream]->duration) {
 	//	//pos = (double)ms / (double)1000 * r2d(ic->streams[pkt->stream_index]->time_base);
 	//}
-	//ÇåÀí¶ÁÈ¡»º³å£¬¶ÁÈ¡µ½ÁËĞÂµÄÎ»ÖÃ£¬·ÀÖ¹ÍøÂçÕ³°üÏÖÏó
+	//æ¸…ç†è¯»å–ç¼“å†²ï¼Œè¯»å–åˆ°äº†æ–°çš„ä½ç½®ï¼Œé˜²æ­¢ç½‘ç»œç²˜åŒ…ç°è±¡
 	int re = avformat_flush(ic);
 	if (re < 0) {
 		mux.unlock();
@@ -136,16 +136,16 @@ bool XDemux::Seek(double pos)
 	long long seekPos = 0;
 	seekPos = ic->streams[videoStream]->duration * pos;
 
-	//int ms = 3000; //ÈıÃëÎ»ÖÃ ¸ù¾İÊ±¼ä»ùÊı£¨·ÖÊı£©×ª»»
+	//int ms = 3000; //ä¸‰ç§’ä½ç½® æ ¹æ®æ—¶é—´åŸºæ•°ï¼ˆåˆ†æ•°ï¼‰è½¬æ¢
 	//long long pos = (double)ms / (double)1000 * r2d(ic->streams[pkt->stream_index]->time_base);
-	//seekÖ»ÊÇÍùºóÌøµ½¹Ø¼üÖ¡£¬Êµ¼ÊÖ¡»¹ÊÇĞèÒªÒµÎñÀ´×öµÄ£¬ÕâÀïĞèÒª¸ú½âÂëÄ£¿é¹ØÁª
+	//seekåªæ˜¯å¾€åè·³åˆ°å…³é”®å¸§ï¼Œå®é™…å¸§è¿˜æ˜¯éœ€è¦ä¸šåŠ¡æ¥åšçš„ï¼Œè¿™é‡Œéœ€è¦è·Ÿè§£ç æ¨¡å—å…³è”
 	re = av_seek_frame(ic, videoStream, seekPos, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);
 	mux.unlock();
 	if (re < 0) return false;
 	return true;
 };
 
-//»ñÈ¡ÊÓÆµ²ÎÊı,·µ»ØµÄ¿Õ¼äĞèÒªÇåÀí avcodec_parameters_free
+//è·å–è§†é¢‘å‚æ•°,è¿”å›çš„ç©ºé—´éœ€è¦æ¸…ç† avcodec_parameters_free
 AVCodecParameters *XDemux::CopyVPara() 
 {
 	mux.lock();
@@ -163,7 +163,7 @@ AVCodecParameters *XDemux::CopyVPara()
 	return pa;
 };
 
-//»ñÈ¡ÒôÆµ²ÎÊı,·µ»ØµÄ¿Õ¼äĞèÒªÇåÀí avcodec_parameters_free
+//è·å–éŸ³é¢‘å‚æ•°,è¿”å›çš„ç©ºé—´éœ€è¦æ¸…ç† avcodec_parameters_free
 AVCodecParameters *XDemux::CopyAPara()
 {
 	mux.lock();
@@ -181,7 +181,7 @@ AVCodecParameters *XDemux::CopyAPara()
 	return pa;
 }
 
-//ÅĞ¶ÏÒôÊÓÆµ
+//åˆ¤æ–­éŸ³è§†é¢‘
 bool XDemux::IsAudio(AVPacket *pkt)
 {
 	if (!pkt) return false;
@@ -193,7 +193,7 @@ bool XDemux::IsAudio(AVPacket *pkt)
 };
 
 
-//Ö»¶ÁÊÓÆµ£¬ÒôÆµ¶ªÆú£¬¿Õ¼äÊÍ·Å
+//åªè¯»è§†é¢‘ï¼ŒéŸ³é¢‘ä¸¢å¼ƒï¼Œç©ºé—´é‡Šæ”¾
  AVPacket* XDemux::ReadVideo()
 {
 	 mux.lock();
@@ -203,18 +203,18 @@ bool XDemux::IsAudio(AVPacket *pkt)
 	 }
 	 mux.unlock();
 	 AVPacket* pkt = NULL;
-	 //·ÀÖ¹×èÈû,¶ÁÈ¡20Ö¡Èç¹û¶Á²»µ½¾ÍÄ¬ÈÏ¶Á²»µ½
+	 //é˜²æ­¢é˜»å¡,è¯»å–20å¸§å¦‚æœè¯»ä¸åˆ°å°±é»˜è®¤è¯»ä¸åˆ°
 	 for (int i = 0; i < 20;i++) {
 	 
 		 pkt = Read();
 		 if (!pkt) {
 			 break;
 		 }
-		 //Ö»¶ÁvideoÖ¡
+		 //åªè¯»videoå¸§
 		 if (pkt->stream_index == videoStream) {
 			 break;
 		 }
-		 //¶ÁÈ¡µ½ÆäËûÖ¡£¨ÒôÆµ£©ÊÍ·Åµô
+		 //è¯»å–åˆ°å…¶ä»–å¸§ï¼ˆéŸ³é¢‘ï¼‰é‡Šæ”¾æ‰
 		 av_packet_free(&pkt);
 	 
 	 }
@@ -223,24 +223,24 @@ bool XDemux::IsAudio(AVPacket *pkt)
 
 
 }
-//¿Õ¼äĞèÒªµ÷ÓÃÕßÊÍ·Å£¬ÊÍ·ÅAVPacket¶ÔÏó¿Õ¼ä£¬ºÍÊı¾İ¿Õ¼ä av_packet_free
+//ç©ºé—´éœ€è¦è°ƒç”¨è€…é‡Šæ”¾ï¼Œé‡Šæ”¾AVPacketå¯¹è±¡ç©ºé—´ï¼Œå’Œæ•°æ®ç©ºé—´ av_packet_free
 AVPacket *XDemux::Read()
 {
 	mux.lock();
 	if (!ic) {
 		mux.unlock();
-		return false;
+		return nullptr;
 	}
-	//·ÖÅä¶ÔÏó¿Õ¼ä
+	//åˆ†é…å¯¹è±¡ç©ºé—´
 	AVPacket *pkt = av_packet_alloc();
-	//¶ÁÈ¡Ò»Ö¡£¬²¢·ÖÅä¿Õ¼ä
+	//è¯»å–ä¸€å¸§ï¼Œå¹¶åˆ†é…ç©ºé—´
 	int re = av_read_frame(ic,pkt);
 	if (re != 0) {
 		mux.unlock();
 		av_packet_free(&pkt);
-		return false;
+		return nullptr;
 	}
-	//pts×ª»»³ÉºÁÃë
+	//ptsè½¬æ¢æˆæ¯«ç§’
 	pkt->pts = pkt->pts * (1000 * (r2d(ic->streams[pkt->stream_index]->time_base)));
 	pkt->dts = pkt->dts * (1000 * (r2d(ic->streams[pkt->stream_index]->time_base)));
 	mux.unlock();
@@ -256,10 +256,10 @@ XDemux::XDemux()
 	static std::mutex dmux;
 	dmux.lock();
 	if (isFirst) {
-		// ³õÊ¼»¯·â×°¿â
+		// åˆå§‹åŒ–å°è£…åº“
 		av_register_all();
 
-		//³õÊ¼»¯ÍøÂç¿â£¨¿ÉÒÔ´ò¿ªrtsp rtmp http Ğ­ÒéµÄÁ÷Ã½ÌåÊÓÆµ£©
+		//åˆå§‹åŒ–ç½‘ç»œåº“ï¼ˆå¯ä»¥æ‰“å¼€rtsp rtmp http åè®®çš„æµåª’ä½“è§†é¢‘ï¼‰
 		avformat_network_init();
 		isFirst = false;
 	}

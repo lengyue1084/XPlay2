@@ -18,10 +18,10 @@ void XAudioThread::Clear()
 	mux.unlock();
 
 }
-//Í£Ö¹Ïß³Ì¡¢¹Ø±ÕÏà¹Ø×ÊÔ´
+//åœæ­¢çº¿ç¨‹ã€å…³é—­ç›¸å…³èµ„æº
 void XAudioThread::Close()
 {
-	//ÏÈµ÷ÓÃ¸¸ÀàµÄClose·½·¨
+	//å…ˆè°ƒç”¨çˆ¶ç±»çš„Closeæ–¹æ³•
 	XDecodeThread::Close();
 	if (res)
 	{
@@ -36,7 +36,7 @@ void XAudioThread::Close()
 	{
 		ap->Close();
 		amux.lock();
-		ap = NULL;//²»ĞèÒªdelete
+		ap = NULL;//ä¸éœ€è¦delete
 		amux.unlock();
 	}
 }
@@ -45,7 +45,7 @@ bool XAudioThread::Open(AVCodecParameters* para, int sampleRate, int channels)
 	if (!para) return false;
 	Clear();
 	amux.lock();
-	//²»ÊÜÉÏÒ»´ÎµÄÓ°Ïì
+	//ä¸å—ä¸Šä¸€æ¬¡çš„å½±å“
 	pts = 0;
 	/*if (!decode) decode = new XDecode();
 	if (!res) res = new XResample();
@@ -85,7 +85,7 @@ void XAudioThread::SetPause(bool isPause)
 	if (ap) ap->SetPause(isPause);
 	//amux.unlock();
 }
-//ÒôÆµ²»ĞèÒª¿¼ÂÇÍ¬²½ÎÊÌâ£¬²ÉÓÃµÄÊÇÊÓÆµÍ¬²½ÒôÆµµÄ·½°¸
+//éŸ³é¢‘ä¸éœ€è¦è€ƒè™‘åŒæ­¥é—®é¢˜ï¼Œé‡‡ç”¨çš„æ˜¯è§†é¢‘åŒæ­¥éŸ³é¢‘çš„æ–¹æ¡ˆ
 void XAudioThread::run()
 {
 	unsigned char* pcm = new unsigned char[1024 * 1024 * 10];
@@ -96,7 +96,7 @@ void XAudioThread::run()
 			msleep(5);
 			continue;
 		}
-		////Èç¹ûÃ»ÓĞÊı¾İ
+		////å¦‚æœæ²¡æœ‰æ•°æ®
 		//if (packs.empty() || !decode || !res || !ap) {
 		//	amux.unlock();
 		//	msleep(1);
@@ -118,23 +118,23 @@ void XAudioThread::run()
 			continue;
 		}
 
-		//Ò»´Îsend,¶à´Îrecv
+		//ä¸€æ¬¡send,å¤šæ¬¡recv
 		while (!isExit)
 		{
 			AVFrame* frame = decode->Recv();
 			if (!frame) break;
-			//¼õÈ¥»º³åÖĞÎ´²¥·ÅµÄÊ±¼ä
+			//å‡å»ç¼“å†²ä¸­æœªæ’­æ”¾çš„æ—¶é—´
 			pts = decode->pts - ap->GetNoPlayMs();
 			//cout << "audio pts = " << pts << endl;
-			//ÖØ²ÉÑù
-			int size = res->Resample(frame,pcm);//»áÊÍ·Åframe¿Õ¼ä£¬´Ë´¦²»ĞèÒªÊÍ·Å
+			//é‡é‡‡æ ·
+			int size = res->Resample(frame,pcm);//ä¼šé‡Šæ”¾frameç©ºé—´ï¼Œæ­¤å¤„ä¸éœ€è¦é‡Šæ”¾
 
 			av_frame_free(&frame);
-			//²¥·ÅÒôÆµ
+			//æ’­æ”¾éŸ³é¢‘
 			while (!isExit)
 			{
 				if (size <= 0) break;
-				//»º³åÎ´²¥·ÅÍê£¬¿Õ¼ä²»¹»
+				//ç¼“å†²æœªæ’­æ”¾å®Œï¼Œç©ºé—´ä¸å¤Ÿ
 				if (ap->GetFree() < size || isPause) {
 					msleep(1);
 					continue;
@@ -161,7 +161,7 @@ XAudioThread::XAudioThread()
 };
 XAudioThread::~XAudioThread()
 {
-	//µÈ´ıÏß³ÌÍË³ö
+	//ç­‰å¾…çº¿ç¨‹é€€å‡º
 	isExit = true;
 	wait();
 

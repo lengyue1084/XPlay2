@@ -10,6 +10,6 @@ class XSlider  : public QSlider
 public:
 	XSlider(QWidget *parent=NULL);
 	~XSlider();
-	//从在鼠标时间，点击滑动条位置
+	//浠庡湪榧犳爣鏃堕棿锛岀偣鍑绘粦鍔ㄦ潯浣嶇疆
 	void mousePressEvent(QMouseEvent * e);
 };

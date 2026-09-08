@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "qt6-msvc2019-x64",
+      "displayName": "Qt 6.5.3 MSVC2019 64-bit",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-qt6",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "D:/Qt/6.5.3/msvc2019_64",
+        "CMAKE_C_COMPILER": "D:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31629/bin/Hostx64/x64/cl.exe",
+        "CMAKE_CXX_COMPILER": "D:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31629/bin/Hostx64/x64/cl.exe",
+        "CMAKE_MAKE_PROGRAM": "D:/Qt/Tools/Ninja/ninja.exe",
+        "FFMPEG_ROOT": "D:/QtProject"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "qt6-msvc2019-x64-debug",
+      "configurePreset": "qt6-msvc2019-x64"
+    }
+  ]
+}

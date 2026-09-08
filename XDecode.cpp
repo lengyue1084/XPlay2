@@ -25,7 +25,7 @@ void XFreeFrame(AVFrame** frame)
 void XDecode::Close()
 {
 	mux.lock();
-	if (codec) {//¹Ø±ÕµÄÊ±ºòÇåÀí½âÂë»º´æÁË
+	if (codec) {//å…³é—­çš„æ—¶å€™æ¸…ç†è§£ç ç¼“å­˜äº†
 		avcodec_close(codec);
 		avcodec_free_context(&codec);
 	}
@@ -35,7 +35,7 @@ void XDecode::Close()
 
 void XDecode::Clear() {
 	mux.lock();
-	//ÇåÀí½âÂë»º³å
+	//æ¸…ç†è§£ç ç¼“å†²
 	if (codec) avcodec_flush_buffers(codec);
 	mux.unlock();
 
@@ -47,8 +47,8 @@ bool XDecode::Open(AVCodecParameters* para)
 	if (!para) return false;
 	Close();
 	//////////////////////////////////////////////////////////
-	///ÊÓÆµ½âÂëÆ÷´ò¿ª
-	///ÕÒµ½ÊÓÆµ½âÂëÆ÷
+	///è§†é¢‘è§£ç å™¨æ‰“å¼€
+	///æ‰¾åˆ°è§†é¢‘è§£ç å™¨
 	AVCodec* vcodec = avcodec_find_decoder(para->codec_id);
 	if (!vcodec)
 	{
@@ -58,21 +58,21 @@ bool XDecode::Open(AVCodecParameters* para)
 	}
 	cout << "find the AVCodec " << para->codec_id << endl;
 
-	mux.lock();//´Ë´¦¿ªÊ¼·ÃÎÊ¹²Ïí±äÁ¿
+	mux.lock();//æ­¤å¤„å¼€å§‹è®¿é—®å…±äº«å˜é‡
 	//AVCodecContext *codec = avcodec_alloc_context3(vcodec);
 	codec = avcodec_alloc_context3(vcodec);
 
-	///ÅäÖÃ½âÂëÆ÷ÉÏÏÂÎÄ²ÎÊı
+	///é…ç½®è§£ç å™¨ä¸Šä¸‹æ–‡å‚æ•°
 	int re = avcodec_parameters_to_context(codec, para);
 	if (re < 0) {
 		cout << "avcodec_parameters_to_context  failed! :" << endl;
 		mux.unlock();
 		return false;
 	}
-	//°ËÏß³Ì½âÂë
+	//å…«çº¿ç¨‹è§£ç 
 	codec->thread_count = 8;
 
-	///´ò¿ª½âÂëÆ÷ÉÏÏÂÎÄ
+	///æ‰“å¼€è§£ç å™¨ä¸Šä¸‹æ–‡
 	re = avcodec_open2(codec, 0, 0);
 	if (re != 0)
 	{
@@ -89,30 +89,30 @@ bool XDecode::Open(AVCodecParameters* para)
 	return true;
 };
 
-//·¢ËÍµ½½âÂëÏß³Ì£¬²»¹Ü³É¹¦Óë·ñÇåÀípkt¿Õ¼ä£¬¶ÔÏóºÍÃ½ÌåÄÚÈİ¿Õ¼ä
+//å‘é€åˆ°è§£ç çº¿ç¨‹ï¼Œä¸ç®¡æˆåŠŸä¸å¦æ¸…ç†pktç©ºé—´ï¼Œå¯¹è±¡å’Œåª’ä½“å†…å®¹ç©ºé—´
 bool XDecode::Send(AVPacket* pkt) {
 
-	// ÅÌ´í
+	// ç›˜é”™
 	if (!pkt || pkt->size <= 0 || !pkt->data) return false;
 	mux.lock();
-	if (!codec) { //Èç¹û¼ÓÂëÆ÷²»´æÔÚ
+	if (!codec) { //å¦‚æœåŠ ç å™¨ä¸å­˜åœ¨
 		mux.unlock();
 		return false;
 	}
 	int re = avcodec_send_packet(codec, pkt);
 	mux.unlock();
-	av_packet_free(&pkt);//Óë·ÖÅäÊÇ³É¶ÔµÄ
+	av_packet_free(&pkt);//ä¸åˆ†é…æ˜¯æˆå¯¹çš„
 	if (re != 0) return false;
 	return true;
 }
 
 
-//»ñÈ¡½âÂëÊı¾İ£¬Ò»´Îsend¿ÉÄÜĞèÒª¶à´ÎRecv,»ñÈ¡»º³åÖĞµÄÊı¾İSend NULLÔÙRecvÖĞ¶à´Î
-//Ã¿´Î¸³ÖµÒ»·İ£¬ÓÉµ÷ÓÃÕßÊÍ·Åav_frame_free
+//è·å–è§£ç æ•°æ®ï¼Œä¸€æ¬¡sendå¯èƒ½éœ€è¦å¤šæ¬¡Recv,è·å–ç¼“å†²ä¸­çš„æ•°æ®Send NULLå†Recvä¸­å¤šæ¬¡
+//æ¯æ¬¡èµ‹å€¼ä¸€ä»½ï¼Œç”±è°ƒç”¨è€…é‡Šæ”¾av_frame_free
 AVFrame* XDecode::Recv()
 {
 	mux.lock();
-	if (!codec) { //Èç¹û½âÂëÆ÷²»´æÔÚ
+	if (!codec) { //å¦‚æœè§£ç å™¨ä¸å­˜åœ¨
 		mux.unlock();
 		return NULL;
 	}

@@ -3,19 +3,19 @@
 #include <QDebug>
 #include "XDemuxThread.h"
 #include "QMessageBox"
-static XDemuxThread dt;//Ö¸ÕëµÄºÃ´¦£¬¹¹Ôìº¯ÊýµÄµ÷ÓÃ²»»áÓ°Ïìµ½³õÊ¼»¯
+static XDemuxThread dt;//Ö¸ï¿½ï¿½ÄºÃ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½Äµï¿½ï¿½Ã²ï¿½ï¿½ï¿½Ó°ï¿½ìµ½ï¿½ï¿½Ê¼ï¿½ï¿½
 XPlay2::XPlay2(QWidget* parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
 	//dt = new XDemuxThread();
 	dt.Start();
-	startTimer(40);//40ºÁÃë£¬Ò»ÃëÖÓ°ËÊ®ÎåÖ¡
+	startTimer(40);//40ï¿½ï¿½ï¿½ë£¬Ò»ï¿½ï¿½ï¿½Ó°ï¿½Ê®ï¿½ï¿½Ö¡
 }
 
 XPlay2::~XPlay2()
 {
-	//¹Ø±Õdt
+	//ï¿½Ø±ï¿½dt
 	dt.Close();
 }
 
@@ -28,7 +28,7 @@ void XPlay2::mouseDoubleClickEvent(QMouseEvent* e)
 		this->showFullScreen();
 	}
 }
-//´°¿Ú³ß´ç±ä»¯
+//ï¿½ï¿½ï¿½Ú³ß´ï¿½ä»¯
 void XPlay2::resizeEvent(QResizeEvent* e)
 {
 	ui.playPos->move(50, this->height() - 50);
@@ -50,20 +50,20 @@ void XPlay2::PlayOrPause()
 void XPlay2::SetPause(bool isPause)
 {
 	if (isPause) {
-		ui.isplay->setText(QString::fromLocal8Bit("²¥ ·Å"));
+		ui.isplay->setText(QStringLiteral("Play"));
 	}
 	else {
-		ui.isplay->setText(QString::fromLocal8Bit("ÔÝ Í£"));
+		ui.isplay->setText(QStringLiteral("Play"));
 	}
 
 }
-//°´×¡»¬¶¯Ìõ
+//ï¿½ï¿½×¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void XPlay2::SliderPress()
 {
 	isSliderPress = true;
 
 }
-//ËÉ¿ª»¬¶¯Ìõ
+//ï¿½É¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void XPlay2::SliderRelease()
 {
 	isSliderPress = false;
@@ -72,8 +72,8 @@ void XPlay2::SliderRelease()
 	dt.Seek(pos);
 }
 
-//Ò»ÃëÖÓ25Ö¡ÊÇ±È½ÏÊÊºÏÈËÑÛµÄ
-// ¶¨Ê±Æ÷ÏÔÊ¾½ø¶ÈÌõ
+//Ò»ï¿½ï¿½ï¿½ï¿½25Ö¡ï¿½Ç±È½ï¿½ï¿½Êºï¿½ï¿½ï¿½ï¿½Ûµï¿½
+// ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void XPlay2::timerEvent(QTimerEvent* e)
 {
 	if (isSliderPress) return;
@@ -89,8 +89,8 @@ void XPlay2::timerEvent(QTimerEvent* e)
 
 void XPlay2::OpenFile()
 {
-	//´ò¿ªÎÄ¼þ
-	QString name = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("Ñ¡ÔñÊÓÆµÎÄ¼þ"));
+	//ï¿½ï¿½ï¿½Ä¼ï¿½
+	QString name = QFileDialog::getOpenFileName(this, QString::fromLocal8Bit("Ñ¡ï¿½ï¿½ï¿½ï¿½Æµï¿½Ä¼ï¿½"));
 	if (name.isEmpty()) return;
 	this->setWindowTitle(name);
 	if (!dt.Open(name.toLocal8Bit(), ui.video)) {

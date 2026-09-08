@@ -1,12 +1,12 @@
 #include "XSlider.h"
-//´ÓÔÚÊó±êÊ±¼ä£¬µã»÷»¬¶¯ÌõÎ»ÖÃ
+//ä»åœ¨é¼ æ ‡æ—¶é—´ï¼Œç‚¹å‡»æ»‘åŠ¨æ¡ä½ç½®
 void XSlider::mousePressEvent(QMouseEvent* e)
 {
-	double pos = (double)e->pos().x() / (double)width();//»¬¶¯ÌõµÄ°Ù·Ö±È
+	double pos = (double)e->pos().x() / (double)width();//æ»‘åŠ¨æ¡çš„ç™¾åˆ†æ¯”
 	setValue(pos * this->maximum());
-	//Ô­ÓĞÊó±êÊÂ¼şµÄ´¦Àí,°ÑÊÂ¼ş¼ÌĞøÏòÏÂ´«µİ
+	//åŸæœ‰é¼ æ ‡äº‹ä»¶çš„å¤„ç†,æŠŠäº‹ä»¶ç»§ç»­å‘ä¸‹ä¼ é€’
 	//QSlider::mousePressEvent(e);
-	QSlider::sliderReleased();//Ö»µ÷ÓÃÕâÒ»¸öĞÅºÅÊÂ¼ş
+	QSlider::sliderReleased();//åªè°ƒç”¨è¿™ä¸€ä¸ªä¿¡å·äº‹ä»¶
 }
 
 XSlider::XSlider(QWidget *parent)

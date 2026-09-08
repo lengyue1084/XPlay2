@@ -12,11 +12,11 @@ public:
     XPlay2(QWidget* parent = Q_NULLPTR);
     ~XPlay2();
 
-    //ÖØÔØ¶¨Ê±Æ÷µÄ·½·¨ ÏÔÊ¾»¬¶¯Ìõ
+    //é‡è½½å®šæ—¶å™¨çš„æ–¹æ³• æ˜¾ç¤ºæ»‘åŠ¨æ¡
     void timerEvent(QTimerEvent * e);
-    //´°¿Ú³ß´ç±ä»¯
+    //çª—å£å°ºå¯¸å˜åŒ–
     void resizeEvent(QResizeEvent *e);
-    //Ë«»÷È«ÆÁ
+    //åŒå‡»å…¨å±
     void mouseDoubleClickEvent(QMouseEvent *e);
     void SetPause(bool isPause);
 public slots:
@@ -27,7 +27,7 @@ public slots:
    
 
 private:
-    //»¬¶¯ÌõÊÇ·ñ°´×¡
+    //æ»‘åŠ¨æ¡æ˜¯å¦æŒ‰ä½
     bool isSliderPress = false;
     Ui::XPlay2Class ui;
 };

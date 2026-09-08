@@ -12,15 +12,15 @@ using namespace std;
 class XVideoThread : public XDecodeThread
 {
 public:
-	//½âÂëpts£¬Èç¹û½ÓÊÕµ½µÄ½âÂëÊı¾İ pts >= seekpts return true,²¢ÇÒÏÔÊ¾»­Ãæ
+	//è§£ç ptsï¼Œå¦‚æœæ¥æ”¶åˆ°çš„è§£ç æ•°æ® pts >= seekpts return true,å¹¶ä¸”æ˜¾ç¤ºç”»é¢
 	virtual bool RepaintPts(AVPacket *pkt,long long seekpts);
-	//´ò¿ª,³É¹¦Óë·ñ¶¼ÒªÇåÀí×ÊÔ´
+	//æ‰“å¼€,æˆåŠŸä¸å¦éƒ½è¦æ¸…ç†èµ„æº
 	virtual bool Open(AVCodecParameters* para, IVideoCall* call, int width, int herght);
 	void run();
 	XVideoThread();
 	virtual ~XVideoThread();
 
-	//Í¬²½Ê±¼ä£¬ÓÉÍâ²¿´«Èë
+	//åŒæ­¥æ—¶é—´ï¼Œç”±å¤–éƒ¨ä¼ å…¥
 	long long synpts = 0;
 
 	bool isPause = false;

@@ -7,7 +7,7 @@
 using namespace std;
 struct XDecode;
 
-//ÇåÀí¶ÓÁĞ
+//æ¸…ç†é˜Ÿåˆ—
 void XDecodeThread::Clear()
 {
 	mux.lock();
@@ -32,7 +32,7 @@ void XDecodeThread::Close()
 	mux.unlock();
 
 }
-//È¡³öÒ»Ö¡Êı¾İ£¬²¢³öÕ»£¬Èç¹ûÃ»ÓĞ·µ»ØNULL
+//å–å‡ºä¸€å¸§æ•°æ®ï¼Œå¹¶å‡ºæ ˆï¼Œå¦‚æœæ²¡æœ‰è¿”å›NULL
 AVPacket* XDecodeThread::Pop()
 {
 
@@ -47,11 +47,11 @@ AVPacket* XDecodeThread::Pop()
 
 	return pkt;
 };
-//¶à¸öÏß³Ì£¬ËùÒÔĞèÒªÒ»¸ölist¶ÓÁĞ½øĞĞpush,È»ºóÏß³ÌÈ¥¶ÁAVPacketÊı¾İ
+//å¤šä¸ªçº¿ç¨‹ï¼Œæ‰€ä»¥éœ€è¦ä¸€ä¸ªlisté˜Ÿåˆ—è¿›è¡Œpush,ç„¶åçº¿ç¨‹å»è¯»AVPacketæ•°æ®
 void XDecodeThread::Push(AVPacket* pkt)
 {
 	if (!pkt) return;
-	//×èÈû
+	//é˜»å¡
 	while (!isExit)
 	{
 		mux.lock();
@@ -69,13 +69,13 @@ void XDecodeThread::Push(AVPacket* pkt)
 };
 XDecodeThread::XDecodeThread() 
 {
-	//´ò¿ª½âÂëÆ÷
+	//æ‰“å¼€è§£ç å™¨
 	if (!decode) decode = new XDecode();
 
 }
  XDecodeThread::~XDecodeThread()
 {
-	 //µÈ´ıÏß³ÌÍË³ö
+	 //ç­‰å¾…çº¿ç¨‹é€€å‡º
 	 isExit = true;
 	 wait();
 }

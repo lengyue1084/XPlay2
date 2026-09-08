@@ -20,18 +20,18 @@ void XDemuxThread::Clear()
 }
 void XDemuxThread::Seek(double pos)
 {
-	//ÇåÀí»º´æ
+	//æ¸…ç†ç¼“å­˜
 	Clear();
 	mux.lock();
 	bool status = this->isPause;
 	mux.unlock();
-	//ÔİÍ£
+	//æš‚åœ
 	SetPause(true);
 
 	mux.lock();
 	if (demux)
 		demux->Seek(pos);
-	//Êµ¼ÊÒªÏÔÊ¾µÄÎ»ÖÃpts
+	//å®é™…è¦æ˜¾ç¤ºçš„ä½ç½®pts
 	long long seekPts = pos * demux->totalMs;
 	while (!isExit)
 	{
@@ -39,20 +39,20 @@ void XDemuxThread::Seek(double pos)
 		if (!pkt) break;
 		//if (pkt->stream_index == demux->audioStream) {
 
-		//	//ÊÇÒôÆµÊı¾İ,¶ªÆú
+		//	//æ˜¯éŸ³é¢‘æ•°æ®,ä¸¢å¼ƒ
 		//	av_packet_free(&pkt);
 		//	continue;
 		//}
-		//Èç¹û½âÂëµ½seekPts(pktµÄptsÓë½âÂë³öÀ´µÄpts²»Ò»ÖÂÎÊÌâ)
+		//å¦‚æœè§£ç åˆ°seekPts(pktçš„ptsä¸è§£ç å‡ºæ¥çš„ptsä¸ä¸€è‡´é—®é¢˜)
 		if (vt->RepaintPts(pkt, seekPts)) {
-			this->pts = seekPts;//Ö¸¶¨µÄÎ»ÖÃÔòÌø³ö
+			this->pts = seekPts;//æŒ‡å®šçš„ä½ç½®åˆ™è·³å‡º
 			break;
 		}
 		//bool re = vt->decode->Send(pkt);
-		//if (!re) break;//±íÊ¾½áÊø½âÂë
+		//if (!re) break;//è¡¨ç¤ºç»“æŸè§£ç 
 		//AVFrame* frame = vt->decode->Recv();
 		//if (!frame) continue;
-		////µ½´ïÎ»ÖÃ
+		////åˆ°è¾¾ä½ç½®
 		//if (frame->pts >= seekPts) {
 
 		//	this->pts = frame->pts;
@@ -63,11 +63,11 @@ void XDemuxThread::Seek(double pos)
 
 	}
 	mux.unlock();
-	//seekÊÇ·ÇÔİÍ£×´Ì¬£¬»Ö¸´²¥·Å
+	//seekæ˜¯éæš‚åœçŠ¶æ€ï¼Œæ¢å¤æ’­æ”¾
 	if (!status)
 		SetPause(false);
 }
-//ÔİÍ£Éè¼Ævt/atÔİÍ£µÄÎÊÌâ
+//æš‚åœè®¾è®¡vt/atæš‚åœçš„é—®é¢˜
 void XDemuxThread::SetPause(bool isPause)
 {
 	mux.lock();
@@ -93,25 +93,25 @@ void XDemuxThread::run()
 			continue;
 		}
 
-		//ÒôÊÓÆµÍ¬²½£¬Ã»ÓĞ¿¼ÂÇÖ»ÓĞÒôÆµ»òÕßÊÓÆµµÄÇé¿ö
+		//éŸ³è§†é¢‘åŒæ­¥ï¼Œæ²¡æœ‰è€ƒè™‘åªæœ‰éŸ³é¢‘æˆ–è€…è§†é¢‘çš„æƒ…å†µ
 		if (vt && at)
 		{
 			pts = at->pts;
 			vt->synpts = at->pts;
 		}
 		AVPacket* pkt = demux->Read();
-		//Ã»ÓĞ¶ÁÈ¡µ½ÊÓÆµÖ¡
+		//æ²¡æœ‰è¯»å–åˆ°è§†é¢‘å¸§
 		if (!pkt) {
 			mux.unlock();
 			msleep(5);
 			continue;
 		}
-		//¶ÁÈ¡µ½Êı¾İÅĞ¶ÏÊı¾İÀàĞÍ
+		//è¯»å–åˆ°æ•°æ®åˆ¤æ–­æ•°æ®ç±»å‹
 		if (demux->IsAudio(pkt)) {
 
 			if (at) at->Push(pkt);
 		}
-		else {//ÊÓÆµ
+		else {//è§†é¢‘
 			if (vt)vt->Push(pkt);
 		}
 
@@ -121,20 +121,20 @@ void XDemuxThread::run()
 
 }
 
-//Ò»°ãÍ·ÎÄ¼şÖĞ²»ÒıÈë.hÎÄ¼ş£¬ÔÙcppÖĞÒıÈë
+//ä¸€èˆ¬å¤´æ–‡ä»¶ä¸­ä¸å¼•å…¥.hæ–‡ä»¶ï¼Œå†cppä¸­å¼•å…¥
 bool XDemuxThread::Open(const char* url, IVideoCall* call)
 {
 	if (url == 0 || url[0] == '\0') return false;
 	mux.lock();
 
-	//´ò¿ª½â·â×°
+	//æ‰“å¼€è§£å°è£…
 	bool re = demux->Open(url);
 	if (!re) {
 		mux.unlock();
 		cout << "demux->Open(url) failed!" << endl;
 		return false;
 	}
-	//´ò¿ªÊÓÆµ½âÂëÆ÷ºÍ´¦ÀíÏß³Ì
+	//æ‰“å¼€è§†é¢‘è§£ç å™¨å’Œå¤„ç†çº¿ç¨‹
 	if (!vt->Open(demux->CopyVPara(), call, demux->width, demux->height)) {
 		re = false;
 		cout << "vt->Open failed!" << endl;
@@ -147,17 +147,17 @@ bool XDemuxThread::Open(const char* url, IVideoCall* call)
 	}
 	//cout << "XDemuxThread::Open!" << endl;
 
-	totalMs = demux->totalMs;//×ÜÊ±³¤
-	//this->totalMs = demux->totalMs;//×ÜÊ±³¤
+	totalMs = demux->totalMs;//æ€»æ—¶é•¿
+	//this->totalMs = demux->totalMs;//æ€»æ—¶é•¿
 	mux.unlock();
 	return true;
 };
 
-//¹Ø±ÕÏß³ÌÇåÀí×ÊÔ´
+//å…³é—­çº¿ç¨‹æ¸…ç†èµ„æº
 void XDemuxThread::Close()
 {
 	isExit = true;
-	//qtÀïÃæµÄ£¬µÈ´ıÏß³ÌÍË³ö
+	//qté‡Œé¢çš„ï¼Œç­‰å¾…çº¿ç¨‹é€€å‡º
 	wait();
 	if (vt) vt->Close();
 	if (at) at->Close();
@@ -170,7 +170,7 @@ void XDemuxThread::Close()
 
 }
 
-//Æô¶¯ËùÓĞÏß³Ì
+//å¯åŠ¨æ‰€æœ‰çº¿ç¨‹
 void XDemuxThread::Start()
 {
 	mux.lock();

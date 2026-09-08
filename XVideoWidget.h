@@ -2,7 +2,7 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QGLShaderProgram>
+#include <QOpenGLShaderProgram>
 #include <mutex>
 #include "IVideoCall.h"
 struct AVFrame;
@@ -12,31 +12,31 @@ class XVideoWidget : public QOpenGLWidget, protected QOpenGLFunctions,public IVi
 
 public:
 	virtual void Init(int width,int height);
-	//²»¹Ü³É¹¦Óë·ñ¶¼ÊÇ·Åframe¿Õ¼ä
+	//ä¸ç®¡æˆåŠŸä¸å¦éƒ½æ˜¯æ”¾frameç©ºé—´
 	virtual void Repaint(AVFrame *frame);
 	XVideoWidget(QWidget* parent);
 	~XVideoWidget();
 protected:
-	//Ë¢ĞÂÏÔÊ¾
+	//åˆ·æ–°æ˜¾ç¤º
 	void paintGL();
 
-	//³õÊ¼»¯gl
+	//åˆå§‹åŒ–gl
 	void initializeGL();
 
-	// ´°¿Ú³ß´ç±ä»¯
+	// çª—å£å°ºå¯¸å˜åŒ–
 	void resizeGL(int width, int height);
 private:
 	std::mutex mux;
 
-	//shader³ÌĞò
-	QGLShaderProgram program;
+	//shaderç¨‹åº
+	QOpenGLShaderProgram program;
 
-	//shaderÖĞyuv±äÁ¿µØÖ·
+	//shaderä¸­yuvå˜é‡åœ°å€
 	GLuint unis[3] = { 0 };
-	//opengµÄ textureµØÖ·
+	//opengçš„ textureåœ°å€
 	GLuint texs[3] = { 0 };
 
-	//²ÄÖÊÄÚ´æ¿Õ¼ä
+	//æè´¨å†…å­˜ç©ºé—´
 	unsigned char* datas[3] = { 0 };
 
 	int width = 240;

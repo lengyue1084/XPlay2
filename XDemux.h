@@ -6,47 +6,47 @@ struct  AVCodecParameters;
 class XDemux
 {
 public:
-	//´ò¿ªÃ½ÌåÎÄ¼ş¡¢»òÕßÁ÷Ã½Ìå rtmp http rstp
+	//æ‰“å¼€åª’ä½“æ–‡ä»¶ã€æˆ–è€…æµåª’ä½“ rtmp http rstp
 	virtual bool Open(const char *url);
 
-	//¿Õ¼äĞèÒªµ÷ÓÃÕßÊÍ·Å£¬ÊÍ·ÅAVPacket¶ÔÏó¿Õ¼ä£¬ºÍÊı¾İ¿Õ¼ä av_packet_free
+	//ç©ºé—´éœ€è¦è°ƒç”¨è€…é‡Šæ”¾ï¼Œé‡Šæ”¾AVPacketå¯¹è±¡ç©ºé—´ï¼Œå’Œæ•°æ®ç©ºé—´ av_packet_free
 	virtual AVPacket *Read();
 
-	//Ö»¶ÁÊÓÆµ£¬ÒôÆµ¶ªÆú£¬¿Õ¼äÊÍ·Å
+	//åªè¯»è§†é¢‘ï¼ŒéŸ³é¢‘ä¸¢å¼ƒï¼Œç©ºé—´é‡Šæ”¾
 	virtual AVPacket* ReadVideo();
 
-	//ÅĞ¶ÏÒôÊÓÆµ
+	//åˆ¤æ–­éŸ³è§†é¢‘
 	virtual bool IsAudio(AVPacket *pkt);
 
-	//»ñÈ¡ÊÓÆµ²ÎÊı,·µ»ØµÄ¿Õ¼äĞèÒªÇåÀí avcodec_parameters_free
+	//è·å–è§†é¢‘å‚æ•°,è¿”å›çš„ç©ºé—´éœ€è¦æ¸…ç† avcodec_parameters_free
 	virtual AVCodecParameters *CopyVPara();
 
-	//»ñÈ¡ÒôÆµ²ÎÊı,·µ»ØµÄ¿Õ¼äĞèÒªÇåÀí avcodec_parameters_free
+	//è·å–éŸ³é¢‘å‚æ•°,è¿”å›çš„ç©ºé—´éœ€è¦æ¸…ç† avcodec_parameters_free
 	virtual AVCodecParameters *CopyAPara();
 
-	//seek Î»ÖÃ 0.0~1.0
+	//seek ä½ç½® 0.0~1.0
 	virtual bool Seek(double pos);
 
-	//Çå¿Õ¶ÁÈ¡»º´æ
+	//æ¸…ç©ºè¯»å–ç¼“å­˜
 	virtual void Clear();
 	virtual void Close();
 
 
 	XDemux();
 	virtual ~XDemux();
-	//Ã½Ìå×ÜÊ±³¤£¨ºÁÃë£©
+	//åª’ä½“æ€»æ—¶é•¿ï¼ˆæ¯«ç§’ï¼‰
 	int totalMs = 0;
 	int width = 0;
 	int height = 0;
 
-	int sampleRate = 0;//Ñù±¾ÂÊ
+	int sampleRate = 0;//æ ·æœ¬ç‡
 	int channels = 0;
 
 protected:
 	std::mutex mux;
-	//½â·â×°ÉÏÏÂÎÄ
+	//è§£å°è£…ä¸Šä¸‹æ–‡
 	AVFormatContext *ic = NULL;
-	//ÒôÊÓÆµË÷Òı£¬¶ÁÈ¡Ê±Çø·ÖÒôÊÓÆµ
+	//éŸ³è§†é¢‘ç´¢å¼•ï¼Œè¯»å–æ—¶åŒºåˆ†éŸ³è§†é¢‘
 	int videoStream = 0;
 	int audioStream = 1;
 

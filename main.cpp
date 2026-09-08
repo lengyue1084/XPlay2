@@ -32,7 +32,7 @@ public:
         //cout << "demux.CopyAPara = " << demux.CopyAPara() << endl;
         //vdecode.Open(demux.CopyVPara());
         //adecode.Open(demux.CopyAPara());
-        //ÖØ²ÉÑù
+        //é‡é‡‡æ ·
         //cout << "resample.Open = " << resample.Open(demux.CopyAPara()) << endl;;
        /* XAudioPlay::Get()->sampleRate = demux.sampleRate;
         XAudioPlay::Get()->channels = demux.channels;
@@ -42,9 +42,9 @@ public:
         cout << "at.Open = " << at.Open(demux.CopyAPara(),demux.sampleRate,demux.channels) << endl;
      ;
         vt.Open(demux.CopyVPara(), video, demux.width, demux.height);
-        //ÒôÆµµÄÏß³ÌÆô¶¯
+        //éŸ³é¢‘çš„çº¿ç¨‹å¯åŠ¨
         at.start();
-        //Æô¶¯ÊÓÆµÏß³Ì
+        //å¯åŠ¨è§†é¢‘çº¿ç¨‹
         vt.start();
     }
     unsigned char* pcm = new unsigned char[1024 * 1024];
@@ -54,14 +54,14 @@ public:
             AVPacket* pkt = demux.Read();
             if (demux.IsAudio(pkt)) {
                 at.Push(pkt);
-               // //·¢ËÍ
+               // //å‘é€
                // adecode.Send(pkt);
-               // //½ÓÊÕ½âÂë
+               // //æŽ¥æ”¶è§£ç 
                // AVFrame* frame = adecode.Recv();
                // cout << "Audio = " << frame << endl;
-               // //ÒôÆµÖØ²ÉÑù
+               // //éŸ³é¢‘é‡é‡‡æ ·
                //int len = resample.Resample(frame,pcm);
-               //cout << "ÖØ²ÉÑù´óÐ¡Resample£º" << len << " ";
+               //cout << "é‡é‡‡æ ·å¤§å°Resampleï¼š" << len << " ";
                //while (len > 0) {
                //    if (XAudioPlay::Get()->GetFree() >= len) {
                //        XAudioPlay::Get()->Write(pcm, len);
@@ -84,7 +84,7 @@ public:
         }
     
     }
-    // ²âÊÔXDemux
+    // æµ‹è¯•XDemux
     XDemux demux;
     /*XDecode vdecode;
     XDecode adecode;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     XPlay2 w;
     w.show();
-    //³õÊ¼»¯gl´°¿Ú
+    //åˆå§‹åŒ–glçª—å£
     //w.ui.video->Init(tt.demux.width,tt.demux.height);
     //tt.video = w.ui.video;
     //tt.Init();

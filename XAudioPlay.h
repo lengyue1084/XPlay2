@@ -3,22 +3,22 @@ class XAudioPlay
 {
 
 public:
-	int sampleRate = 44100;//Ñù±¾ÂÊ
-	int sampleSize = 16;//Ñù±¾´óĞ¡
+	int sampleRate = 44100;//æ ·æœ¬ç‡
+	int sampleSize = 16;//æ ·æœ¬å¤§å°
 	int channels = 2;
-	//´ò¿ªÒôÆµ²¥·Å£¬¶¨ÒåÎª´¿Ğéº¯Êı£¬ÊµÏÖ·ÅÔÚ¼Ì³ĞÀàµ±ÖĞ
+	//æ‰“å¼€éŸ³é¢‘æ’­æ”¾ï¼Œå®šä¹‰ä¸ºçº¯è™šå‡½æ•°ï¼Œå®ç°æ”¾åœ¨ç»§æ‰¿ç±»å½“ä¸­
 	virtual bool Open() = 0;
 	virtual void Close() = 0;
 	virtual void Clear() = 0;
-	//·µ»Ø»º´æÖĞ»¹Ã»ÓĞ²¥·ÅµÄÊ±¼äms
+	//è¿”å›ç¼“å­˜ä¸­è¿˜æ²¡æœ‰æ’­æ”¾çš„æ—¶é—´ms
 	virtual long long GetNoPlayMs() = 0;
-	//²¥·ÅÒôÆµ
+	//æ’­æ”¾éŸ³é¢‘
 	virtual bool Write(const unsigned char* data, int datasize) = 0;
-	//ÅĞ¶ÏÊÇ·ñÓĞ×ã¹»µÄ¿Õ¼äÀ´Ğ´ÈëÒôÆµĞÅÏ¢
+	//åˆ¤æ–­æ˜¯å¦æœ‰è¶³å¤Ÿçš„ç©ºé—´æ¥å†™å…¥éŸ³é¢‘ä¿¡æ¯
 	virtual int GetFree() = 0;
 	virtual void SetPause(bool isPause) = 0;
 
-	//²¥·ÅµÄ»°Ö»ÓĞÒ»¸ö¶ÔÏó
+	//æ’­æ”¾çš„è¯åªæœ‰ä¸€ä¸ªå¯¹è±¡
 	static XAudioPlay* Get();
 	XAudioPlay();
 	virtual ~XAudioPlay();
