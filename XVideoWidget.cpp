@@ -85,6 +85,7 @@ void XVideoWidget::Repaint(AVFrame* frame)
 
 	}
 
+	hasFrame = true;
 	mux.unlock();
 	av_frame_free(&frame);
 	//刷新显示
@@ -94,6 +95,7 @@ void XVideoWidget::Repaint(AVFrame* frame)
 void XVideoWidget::Init(int width, int height)
 {
 	mux.lock();
+	hasFrame = false;
 	this->width = width;
 	this->height = height;
 	delete datas[0];
@@ -229,6 +231,36 @@ void XVideoWidget::paintGL()
 	//fread(datas[1], 1, width * height / 4, fp);
 	//fread(datas[2], 1, width * height / 4, fp);
 	mux.lock();
+	if (!hasFrame || !datas[0] || !datas[1] || !datas[2]) {
+		glClearColor(0.008f, 0.012f, 0.016f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		mux.unlock();
+		return;
+	}
+	glClearColor(0.008f, 0.012f, 0.016f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	GLfloat xScale = 1.0f;
+	GLfloat yScale = 1.0f;
+	const QSize viewportSize = size();
+	if (height > 0 && viewportSize.height() > 0) {
+		const float videoAspect = static_cast<float>(width) / static_cast<float>(height);
+		const float viewportAspect = static_cast<float>(viewportSize.width()) /
+			static_cast<float>(viewportSize.height());
+		if (viewportAspect > videoAspect)
+			xScale = videoAspect / viewportAspect;
+		else
+			yScale = viewportAspect / videoAspect;
+	}
+	const GLfloat vertices[] = {
+		-xScale, -yScale,
+		 xScale, -yScale,
+		-xScale,  yScale,
+		 xScale,  yScale
+	};
+	glVertexAttribPointer(A_VER, 2, GL_FLOAT, 0, 0, vertices);
+	glEnableVertexAttribArray(A_VER);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texs[0]); //0层绑定到Y材质
 	//修改材质内容(复制内存内容)

@@ -2,6 +2,20 @@
   "version": 3,
   "configurePresets": [
     {
+      "name": "qt6-mingw-x64",
+      "displayName": "Qt 6.5.3 MinGW 64-bit",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/qt6-mingw-x64-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_PREFIX_PATH": "D:/Qt/6.5.3/mingw_64",
+        "CMAKE_C_COMPILER": "D:/Qt/Tools/mingw1120_64/bin/gcc.exe",
+        "CMAKE_CXX_COMPILER": "D:/Qt/Tools/mingw1120_64/bin/g++.exe",
+        "CMAKE_MAKE_PROGRAM": "D:/Qt/Tools/Ninja/ninja.exe",
+        "FFMPEG_ROOT": "D:/QtProject"
+      }
+    },
+    {
       "name": "qt6-msvc2019-x64",
       "displayName": "Qt 6.5.3 MSVC2019 64-bit",
       "generator": "Ninja",
@@ -16,6 +30,10 @@
     }
   ],
   "buildPresets": [
+    {
+      "name": "qt6-mingw-x64-debug",
+      "configurePreset": "qt6-mingw-x64"
+    },
     {
       "name": "qt6-msvc2019-x64-debug",
       "configurePreset": "qt6-msvc2019-x64"

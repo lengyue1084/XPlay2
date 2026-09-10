@@ -41,5 +41,6 @@ private:
 
 	int width = 240;
 	int height = 128;
+	bool hasFrame = false;
 
 };

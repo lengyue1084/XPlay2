@@ -6,6 +6,7 @@ public:
 	int sampleRate = 44100;//样本率
 	int sampleSize = 16;//样本大小
 	int channels = 2;
+	float volume = 0.68f;
 	//打开音频播放，定义为纯虚函数，实现放在继承类当中
 	virtual bool Open() = 0;
 	virtual void Close() = 0;
@@ -17,6 +18,7 @@ public:
 	//判断是否有足够的空间来写入音频信息
 	virtual int GetFree() = 0;
 	virtual void SetPause(bool isPause) = 0;
+	virtual void SetVolume(float volume) = 0;
 
 	//播放的话只有一个对象
 	static XAudioPlay* Get();

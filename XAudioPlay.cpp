@@ -17,6 +17,7 @@ public:
 		fmt.setSampleFormat(sampleSize == 8 ? QAudioFormat::UInt8 : QAudioFormat::Int16);
 		mux.lock();
 		output = new QAudioSink(fmt);
+		output->setVolume(volume);
 		io = output->start(); //开始播放
 		mux.unlock();
 		if (io) return true;
@@ -86,6 +87,16 @@ public:
 		mux.unlock();
 	}
 	//播放音频
+	void SetVolume(float newVolume)
+	{
+		if (newVolume < 0.0f) newVolume = 0.0f;
+		if (newVolume > 1.0f) newVolume = 1.0f;
+		mux.lock();
+		volume = newVolume;
+		if (output) output->setVolume(volume);
+		mux.unlock();
+	}
+
 	virtual bool Write(const unsigned char* data, int datasize)
 	{
 		if (!data || datasize <= 0) return false;
