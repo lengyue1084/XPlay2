@@ -61,3 +61,7 @@ build/qt6-mingw-x64-debug/bin/XPlay2.exe
 ```powershell
 XPlay2.exe "D:/Videos/example.mp4"
 ```
+
+## 开源协议
+
+本项目采用 [MIT License](LICENSE) 开源协议。
